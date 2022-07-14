@@ -1,10 +1,13 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Nav from './components/Nav';
+import Table from "./components/Table";
 
 const App = () => {
   return (
     <StyledApp className="App">
       <Nav />
+      <Table />
     </StyledApp>
   );
 }
