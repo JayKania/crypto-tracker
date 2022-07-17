@@ -1,37 +1,79 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import styled from "styled-components"
-
-const Table = () => {
-
-    const currency = "usd";
-    const [coinsList, setCoinsList] = useState([]);
+import { memo } from "react";
+import styled from "styled-components";
 
 
-    useEffect(() => {
-        const getCoinsData = async () => {
-            const response = await axios(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`);
-            console.dir(response.data);
-            setCoinsList(response.data);
-        }
-        getCoinsData();
-        console.log();
-    }, []);
+interface tableProps {
+    coinsList: coin[],
+    searchedCoins: coin[]
+}
 
-    const numberWithCommas = (amount: String) => {
+interface coin {
+    id: number,
+    market_cap_rank: number,
+    image: string,
+    name: string,
+    symbol: string,
+    current_price: number,
+    price_change_percentage_24h: number,
+    market_cap: number,
+    total_volume: number,
+    circulating_supply: number,
+}
+
+const Table = ({ coinsList, searchedCoins }: tableProps) => {
+
+    console.group("table logs")
+    const numberWithCommas = (amount: string) => {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    const listMarkup = coinsList.map(({ id, market_cap_rank, image, name, symbol, current_price, price_change_percentage_24h, market_cap, total_volume, circulating_supply }) => {
+    const convertToInternationalCurrencySystem = (labelValue: number): string | number => {
 
-        const new_current_price = numberWithCommas(Number(current_price).toFixed(3));
+        // Nine Zeroes for Billions
+        return Math.abs(Number(labelValue)) >= 1.0e+9
+
+            ? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + "B"
+            // Six Zeroes for Millions 
+            : Math.abs(Number(labelValue)) >= 1.0e+6
+
+                ? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
+                // Three Zeroes for Thousands
+                : Math.abs(Number(labelValue)) >= 1.0e+3
+
+                    ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
+
+                    : Math.abs(Number(labelValue));
+
+    }
+
+    let listOfCoins: coin[];
+
+    if (searchedCoins.length !== 0) {
+        listOfCoins = [...searchedCoins]
+    } else {
+        listOfCoins = [...coinsList]
+    }
+    console.dir(searchedCoins);
+    console.dir(coinsList);
+    console.dir(listOfCoins);
+
+
+    const listMarkup = listOfCoins.map(({ id, market_cap_rank, image, name, symbol, current_price, price_change_percentage_24h, market_cap, total_volume, circulating_supply }) => {
+
+        let temp_current_price: string[] = Number(current_price).toString().split('.');
+        // console.log(new_current_price);
+        let new_current_price = numberWithCommas(temp_current_price[0]) + "." + (temp_current_price[1] || "00");
+
         // const new_current_price = current_price;
-        let new_price_change_percentage_24h = Number(price_change_percentage_24h).toFixed(2);
-        const changeColor = new_price_change_percentage_24h[0] === '-' ? "price-decrease" : "price-increase";
+        let new_price_change_percentage_24h: string = Number(price_change_percentage_24h).toFixed(2);
+
+        const changeColor: string = new_price_change_percentage_24h[0] === '-' ? "price-decrease" : "price-increase";
+
         new_price_change_percentage_24h = Math.abs(Number(price_change_percentage_24h)).toFixed(3);
-        const new_market_cap = numberWithCommas(market_cap);
-        const new_total_volume = numberWithCommas(total_volume);
-        const new_circulating_supply = numberWithCommas(Number(circulating_supply).toFixed(3));
+
+        const new_market_cap: any = convertToInternationalCurrencySystem(market_cap);
+        const new_total_volume: any = convertToInternationalCurrencySystem(total_volume);
+        const new_circulating_supply: any = convertToInternationalCurrencySystem(circulating_supply);
 
 
         return <StyledCurrencyData className="row row-currency-data" key={id}>
@@ -51,12 +93,13 @@ const Table = () => {
         </StyledCurrencyData>
     })
 
+    console.groupEnd();
 
     return (
         <StyledTable className="currency-container">
             <StyledHeader className="row row-header">
                 <div className="header-title-rank">
-                    #
+                    # (Rank)
                 </div>
                 <div className="header-title-name">
                     Name
@@ -85,11 +128,14 @@ const Table = () => {
 
 const StyledTable = styled.div`
     margin:  0 auto;
-    padding: 0 2rem;
+    padding: 1rem 3rem;
+    width: 95%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    border-radius: 20px ;
+    background-color: rgb(25, 32, 84);
     .row {
         display: flex;
         justify-content: space-evenly;
@@ -97,7 +143,10 @@ const StyledTable = styled.div`
         color: white;
         width: 100%;
         padding: 2rem 1rem;
-        border-bottom: 1px solid #828282;
+        border-bottom: 1px solid rgba(124, 124, 124, 0.5);
+    }
+    .row:last-of-type {
+        border: none;
     }
 `;
 
@@ -111,7 +160,7 @@ const StyledHeader = styled.div`
         text-align: left;
     }
     [class*="header-title-"]:first-of-type{
-        flex-basis: 20%;
+        flex-basis: 40%;
     }
     [class*="header-title-"]:nth-of-type(n+3) {
         text-align: right;
@@ -126,7 +175,7 @@ const StyledCurrencyData = styled.div`
         text-align: right;
     }
     .coin-rank {
-        flex-basis: 20%;
+        flex-basis: 40%;
         text-align: left;
     }
     .coin-name-container {
@@ -184,8 +233,8 @@ const StyledCurrencyData = styled.div`
     }
     :hover {
         cursor: pointer;
-        background-color: rgb(36, 43, 123);
+        background-color: rgb(27, 32, 92);
     }
 `;
 
-export default Table
+export default memo(Table);
