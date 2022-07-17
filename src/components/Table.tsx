@@ -200,6 +200,9 @@ const StyledCurrencyData = styled.div`
             color: rgb(128, 138, 157);
             text-transform: uppercase;
         }
+        :hover {
+            cursor: pointer;
+        }
     }
     .coin-24h-change {
         &.price-increase {
@@ -232,7 +235,6 @@ const StyledCurrencyData = styled.div`
         }
     }
     :hover {
-        cursor: pointer;
         background-color: rgb(27, 32, 92);
     }
 `;

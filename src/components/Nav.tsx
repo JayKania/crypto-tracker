@@ -66,6 +66,12 @@ const StyledNav = styled.nav`
     padding: 1rem 2rem;
     border-radius: 20px ;
     background-color: rgb(25, 32, 84);
+
+    /* @media only screen and (max-width: 320px) {
+        width: 100%;
+        border-radius: 0;
+        padding: 1rem 0.5rem;
+    } */
 `;
 
 const StyledLink = styled.a`
@@ -81,20 +87,29 @@ const StyledLink = styled.a`
     &.icon {
         color: white;
     }
+    /* @media only screen and (max-width: 320px) {
+        font-size: 12px;
+    } */
 `
 
 const StyledSearchLoginContainer = styled.div`
     display: flex;
     gap: 1rem;
+    align-items: center;
+    /* @media only screen and (max-width: 320px) {
+       gap: 0.5rem;
+    } */
 `;
 
 const StyledSearchBar = styled.input`
     background: transparent;
-    border: 1px solid grey;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    padding: 0.7rem 1.2rem;
     outline: none;
     color: white;
+    box-shadow: inset 1px 1px 5px 1px #0D1449;
+
 `;
 
 
