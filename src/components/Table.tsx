@@ -4,7 +4,8 @@ import styled from "styled-components";
 
 interface tableProps {
     coinsList: coin[],
-    searchedCoins: coin[]
+    searchedCoins: coin[],
+    page: number
 }
 
 interface coin {
@@ -20,7 +21,10 @@ interface coin {
     circulating_supply: number,
 }
 
-const Table = ({ coinsList, searchedCoins }: tableProps) => {
+const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
+
+
+
 
     console.group("table logs")
     const numberWithCommas = (amount: string) => {
@@ -120,8 +124,7 @@ const Table = ({ coinsList, searchedCoins }: tableProps) => {
                     Circulating Supply
                 </div>
             </StyledHeader>
-            {listMarkup}
-
+            {listMarkup.slice((page - 1) * 30, (page - 1) * 30 + 30)}
         </StyledTable>
     )
 }

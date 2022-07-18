@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import CoinChart from "./components/CoinChart";
 import Nav from './components/Nav';
+import PaginationBar from "./components/PaginationBar";
 import Table from "./components/Table";
 
 
@@ -11,7 +13,11 @@ const App = () => {
   const currency = "usd";
   const [coinsList, setCoinsList] = useState([]);
   const [searchedCoins, setSearcedCoins] = useState([]);
+  const [page, setPage] = useState<number>(1);
 
+  const pageHandler = (pageNo: number) => {
+    setPage(pageNo);
+  }
 
 
   useEffect(() => {
@@ -26,7 +32,8 @@ const App = () => {
 
   const tablePropsObj = {
     coinsList: coinsList,
-    searchedCoins: searchedCoins
+    searchedCoins: searchedCoins,
+    page: page
   }
 
   const navPropsObj = {
@@ -34,10 +41,18 @@ const App = () => {
     setSearcedCoins: setSearcedCoins
   }
 
+  const pagePropsObj = {
+    coinsList: coinsList,
+    page: page,
+    pageHandler: pageHandler
+  }
+
   return (
     <StyledApp className="App">
       <Nav {...navPropsObj} />
+      {/* <CoinChart /> */}
       <Table {...tablePropsObj} />
+      <PaginationBar {...pagePropsObj} />
     </StyledApp>
   );
 }
