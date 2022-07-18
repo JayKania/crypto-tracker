@@ -1,8 +1,8 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 interface pageProps {
-    coinsList: coin[];
+    coinsList: coin[],
+    searchedCoins: coin[],
     page: number,
     pageHandler: any
 }
@@ -20,9 +20,9 @@ interface coin {
     circulating_supply: number;
 }
 
-const PaginationBar = ({ coinsList, page, pageHandler }: pageProps) => {
+const PaginationBar = ({ coinsList, searchedCoins, page, pageHandler }: pageProps) => {
 
-    const noOfPages: number = coinsList.length / 30;
+    const noOfPages: number = searchedCoins.length === 0 ? Math.ceil(coinsList.length / 30) : Math.ceil(searchedCoins.length / 30);
 
     let listMarkup: any[] = [];
 

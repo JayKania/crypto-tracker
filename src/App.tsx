@@ -38,11 +38,14 @@ const App = () => {
 
   const navPropsObj = {
     coinsList: coinsList,
-    setSearcedCoins: setSearcedCoins
+    setSearcedCoins: setSearcedCoins,
+    page: page,
+    pageHandler: pageHandler
   }
 
   const pagePropsObj = {
     coinsList: coinsList,
+    searchedCoins: searchedCoins,
     page: page,
     pageHandler: pageHandler
   }

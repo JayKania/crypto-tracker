@@ -3,7 +3,9 @@ import styled from "styled-components";
 
 interface navprops {
     coinsList: coin[]
-    setSearcedCoins: any
+    setSearcedCoins: any,
+    page: number,
+    pageHandler: any
 }
 
 interface coin {
@@ -18,7 +20,7 @@ interface coin {
     total_volume: number,
     circulating_supply: number,
 }
-const Nav = ({ setSearcedCoins, coinsList }: navprops) => {
+const Nav = ({ setSearcedCoins, coinsList, page, pageHandler }: navprops) => {
 
 
     const [input, setInput] = useState("");
@@ -40,6 +42,9 @@ const Nav = ({ setSearcedCoins, coinsList }: navprops) => {
             })
         }
         setSearcedCoins(newCoinsList);
+        if (page !== 1) {
+            pageHandler(1);
+        }
         console.groupEnd();
 
     }
