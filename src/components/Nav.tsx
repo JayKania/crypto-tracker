@@ -52,7 +52,7 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler }: navprops) => {
 
     return (
         <StyledNav>
-            <StyledLink className="icon"><i className="fa fa-brands fa-bitcoin fa-lg"></i></StyledLink>
+            <StyledLink className="icon" href="/"><i className="fa fa-brands fa-bitcoin fa-lg"></i></StyledLink>
             <StyledSearchLoginContainer className="search-login-container">
                 <StyledSearchBar placeholder="Search" onChange={inputHandler} value={input} />
                 <StyledLink href="#">LOG IN</StyledLink>

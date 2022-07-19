@@ -5,8 +5,7 @@ import CoinChart from "./components/CoinChart";
 import Nav from './components/Nav';
 import PaginationBar from "./components/PaginationBar";
 import Table from "./components/Table";
-
-
+import { Routes, Route } from "react-router-dom";
 
 const App = () => {
 
@@ -53,9 +52,17 @@ const App = () => {
   return (
     <StyledApp className="App">
       <Nav {...navPropsObj} />
-      <CoinChart />
-      <Table {...tablePropsObj} />
-      <PaginationBar {...pagePropsObj} />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Table {...tablePropsObj} />
+            <PaginationBar {...pagePropsObj} />
+          </>}
+        />
+        <Route path="coins" element={<CoinChart />}>
+          <Route path=":coinID" element={<CoinChart />} />
+        </Route>
+      </Routes>
     </StyledApp>
   );
 }

@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 
@@ -23,14 +24,16 @@ interface coin {
 
 const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
 
-
-
-
     console.group("table logs")
+
+    let navigate = useNavigate();
+
+    // formatter to get string with commas
     const numberWithCommas = (amount: string) => {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
+    // formatter to get B/M/K at the value
     const convertToInternationalCurrencySystem = (labelValue: number): string | number => {
 
         // Nine Zeroes for Billions
@@ -48,6 +51,11 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
 
                     : Math.abs(Number(labelValue));
 
+    }
+
+    const routeHandler = (id: string) => {
+        console.log(id);
+        navigate("/coins/" + id);
     }
 
     let listOfCoins: coin[];
@@ -82,7 +90,7 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
 
         return <StyledCurrencyData className="row row-currency-data" key={id}>
             <div className="coin-rank">{market_cap_rank}</div>
-            <div className="coin-name-container">
+            <div className="coin-name-container" id={`${id}-container`} onClick={() => { routeHandler(id.toString()) }}>
                 <div className="coin-image">
                     <img src={image} alt={symbol} />
                 </div>
@@ -187,10 +195,11 @@ const StyledCurrencyData = styled.div`
         align-items: center;
         justify-content: space-evenly;
         .coin-name {
+            text-decoration: none;
             text-align: left;
         }
         .coin-image {
-            width: 50px;
+            width: 60px;
             display: flex;
             align-items: center;
             img {

@@ -27,8 +27,6 @@ const PaginationBar = ({ coinsList, searchedCoins, page, pageHandler }: pageProp
 
     let listMarkup: any[] = [];
 
-    console.log("hello");
-
 
     for (let i = 1; i <= noOfPages; i++) {
         listMarkup.push(<StyledPageNumber className={`page-number-${i} ${page === i ? "active" : ""}`} key={i} onClick={() => { pageHandler(i) }} >{i}</StyledPageNumber>);
