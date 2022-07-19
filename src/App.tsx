@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import CoinChart from "./components/CoinChart";
 import Nav from './components/Nav';
@@ -15,9 +15,9 @@ const App = () => {
   const [searchedCoins, setSearcedCoins] = useState([]);
   const [page, setPage] = useState<number>(1);
 
-  const pageHandler = (pageNo: number) => {
+  const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
-  }
+  }, [page])
 
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const App = () => {
   return (
     <StyledApp className="App">
       <Nav {...navPropsObj} />
-      {/* <CoinChart /> */}
+      <CoinChart />
       <Table {...tablePropsObj} />
       <PaginationBar {...pagePropsObj} />
     </StyledApp>
