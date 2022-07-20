@@ -51,10 +51,10 @@ const App = () => {
 
   return (
     <StyledApp className="App">
-      <Nav {...navPropsObj} />
       <Routes>
         <Route path="/" element={
           <>
+            <Nav {...navPropsObj} />
             <Table {...tablePropsObj} />
             <PaginationBar {...pagePropsObj} />
           </>}

@@ -147,6 +147,8 @@ const StyledTable = styled.div`
     justify-content: space-evenly;
     border-radius: 20px ;
     background-color: rgb(25, 32, 84);
+    box-shadow: 1px 1px 30px 15px rgb(9, 14, 52);
+
     .row {
         display: flex;
         justify-content: space-evenly;

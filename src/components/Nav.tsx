@@ -71,7 +71,7 @@ const StyledNav = styled.nav`
     padding: 1rem 2rem;
     border-radius: 20px ;
     background-color: rgb(25, 32, 84);
-
+    box-shadow: 1px 1px 30px 15px rgb(9, 14, 52);
     /* @media only screen and (max-width: 320px) {
         width: 100%;
         border-radius: 0;
