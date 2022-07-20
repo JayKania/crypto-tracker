@@ -52,6 +52,7 @@ const StyledPaginationBarContainer = styled.div`
   color: #cdcdcd;
   justify-content: center;
   margin: 2rem 0;
+  flex-wrap: wrap;
 `;
 
 const StyledPageNumbersContainer = styled.div`

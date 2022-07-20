@@ -71,7 +71,7 @@ const App = () => {
 const StyledApp = styled.div`
     padding: 2rem 0;
     font-size: 14px;
-    @media only screen and (max-width: 320px) {
+    @media only screen and (max-width: 540px) {
         padding: 0;
     }
 `;

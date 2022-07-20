@@ -97,10 +97,13 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
                 <div className="coin-name">{name}</div>
                 <div className="coin-symbol">{symbol}</div>
             </div>
-            <div className="coin-price">$ {new_current_price}</div>
-            <div className={`coin-24h-change ${changeColor}`}>{new_price_change_percentage_24h} %</div>
-            <div className="coin-market-cap">$ {new_market_cap}</div>
-            <div className="coin-volume">$ {new_total_volume}</div>
+            <div className="coin-price">
+                <span>${new_current_price}</span>
+                <div className={`coin-24h-change ${changeColor}`}>{new_price_change_percentage_24h}%</div>
+            </div>
+            <div className={`coin-24h-change ${changeColor}`}>{new_price_change_percentage_24h}%</div>
+            <div className="coin-market-cap">${new_market_cap}</div>
+            <div className="coin-volume">${new_total_volume}</div>
             <div className="coin-circulating-supply">{new_circulating_supply} {`${symbol}`.toUpperCase()}</div>
         </StyledCurrencyData>
     })
@@ -111,7 +114,7 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
         <StyledTable className="currency-container">
             <StyledHeader className="row row-header">
                 <div className="header-title-rank">
-                    # (Rank)
+                    Rank
                 </div>
                 <div className="header-title-name">
                     Name
@@ -161,6 +164,13 @@ const StyledTable = styled.div`
     .row:last-of-type {
         border: none;
     }
+
+    @media only screen and (max-width: 540px) {
+        width: 100%;
+        border-radius: 0;
+        padding: 1rem 0rem;
+    }
+
 `;
 
 const StyledHeader = styled.div`
@@ -177,6 +187,15 @@ const StyledHeader = styled.div`
     }
     [class*="header-title-"]:nth-of-type(n+3) {
         text-align: right;
+    }
+
+    @media only screen and (max-width: 540px) {
+        &.row-header {
+            padding: 0rem 1rem 1rem 1rem;
+        }
+        [class*="header-title-"]:nth-of-type(n+4) {
+            display: none;
+        }
     }
 
     `;
@@ -218,6 +237,13 @@ const StyledCurrencyData = styled.div`
             cursor: pointer;
         }
     }
+
+    .coin-price {
+        .coin-24h-change {
+            display: none;
+        }
+    }
+
     .coin-24h-change {
         &.price-increase {
             color: rgb(22, 220, 132);
@@ -250,6 +276,17 @@ const StyledCurrencyData = styled.div`
     }
     :hover {
         background-color: rgb(27, 32, 92);
+    }
+
+    @media only screen and (max-width: 540px) {
+        [class*="coin-"]:nth-of-type(n+4) {
+            display: none;
+        }
+        .coin-price {
+            .coin-24h-change {
+                display: block;
+            }
+        }
     }
 `;
 
