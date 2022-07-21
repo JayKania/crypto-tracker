@@ -69,7 +69,7 @@ const StyledNav = styled.nav`
     width: 95%;
     margin:  0rem auto 2rem auto;
     padding: 1rem 2rem;
-    border-radius: 20px ;
+    border-radius: 10px ;
     background-color: rgb(25, 32, 84);
     box-shadow: 1px 1px 30px 15px rgb(9, 14, 52);
 

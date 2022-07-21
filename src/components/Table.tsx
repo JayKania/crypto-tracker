@@ -148,7 +148,7 @@ const StyledTable = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    border-radius: 20px ;
+    border-radius: 10px ;
     background-color: rgb(25, 32, 84);
     box-shadow: 1px 1px 30px 15px rgb(9, 14, 52);
 
@@ -194,6 +194,11 @@ const StyledHeader = styled.div`
             padding: 0rem 1rem 1rem 1rem;
         }
         [class*="header-title-"]:nth-of-type(n+4) {
+            display: none;
+        }
+    }
+    @media only screen and (min-width: 542px) and (max-width: 1104px) {
+        [class*="header-title-"]:last-of-type {
             display: none;
         }
     }
@@ -286,6 +291,11 @@ const StyledCurrencyData = styled.div`
             .coin-24h-change {
                 display: block;
             }
+        }
+    }
+    @media only screen and (min-width: 542px) and (max-width: 1104px) {
+        [class*="coin-"]:last-of-type {
+            display: none;
         }
     }
 `;

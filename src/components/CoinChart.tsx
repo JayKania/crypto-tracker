@@ -124,10 +124,10 @@ const CoinChart = () => {
                 <div className="coin-name">{coinData.name}</div>
                 <div className="coin-symbol">{coinData.symbol}</div>
             </div>
-            <div className="coin-price">$ {new_current_price}</div>
+            <div className="coin-price">${new_current_price}</div>
             <div className={`coin-24h-change ${changeColor}`}>{new_price_change_percentage_24h} %</div>
-            <div className="coin-market-cap">$ {new_market_cap}</div>
-            <div className="coin-volume">$ {new_total_volume}</div>
+            <div className="coin-market-cap">${new_market_cap}</div>
+            <div className="coin-volume">${new_total_volume}</div>
             <div className="coin-circulating-supply">{new_circulating_supply} {`${coinData.symbol}`.toUpperCase()}</div>
         </StyledCurrencyData>
     }
@@ -160,6 +160,10 @@ const CoinChart = () => {
     const coinMarkup = createCoinMarkup();
     console.groupEnd()
 
+    if (coinData.length === 0) {
+        return <StyledSpinner className='spinner' />
+    }
+
     return (
         <StyledCoinChartContainer>
             <StyledStatsContainer>
@@ -175,7 +179,7 @@ const CoinChart = () => {
                 <Line data={data} />
                 <StyledCurrencyHeader className="row-header">
                     <div className="header-title-rank">
-                        # (Rank)
+                        Rank
                     </div>
                     <div className="header-title-name">
                         Name
@@ -209,6 +213,27 @@ const CoinChart = () => {
         </StyledCoinChartContainer>
     )
 }
+
+const StyledSpinner = styled.div`
+    border: 5px solid transparent;
+    border-top: 5px solid rgb(12, 123, 238);
+    border-bottom: 5px solid rgb(12, 123, 238);
+    border-radius: 50%;
+    width:10px;
+    padding: 1rem;
+    animation: spin infinite linear 1s;
+    position: absolute;
+    top:calc(50% - 2rem);
+    left: 50%;
+    @keyframes spin {
+        from{
+            transform: rotate(0deg);   
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+`
 
 const StyledCoinChartContainer = styled.div`
     width: 95%;

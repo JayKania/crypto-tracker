@@ -53,11 +53,12 @@ const App = () => {
     <StyledApp className="App">
       <Routes>
         <Route path="/" element={
-          <>
-            <Nav {...navPropsObj} />
-            <Table {...tablePropsObj} />
-            <PaginationBar {...pagePropsObj} />
-          </>}
+          coinsList.length === 0 ? <StyledSpinner className="spinner" /> :
+            <>
+              <Nav {...navPropsObj} />
+              <Table {...tablePropsObj} />
+              <PaginationBar {...pagePropsObj} />
+            </>}
         />
         <Route path="coins" element={<CoinChart />}>
           <Route path=":coinID" element={<CoinChart />} />
@@ -75,6 +76,30 @@ const StyledApp = styled.div`
         padding: 0;
     }
 `;
+
+const StyledSpinner = styled.div`
+    border: 5px solid transparent;
+    border-top: 5px solid rgb(12, 123, 238);
+    border-bottom: 5px solid rgb(12, 123, 238);
+    border-radius: 50%;
+    width:10px;
+    padding: 1rem;
+    animation: spin infinite linear 1s;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% - 2rem);
+    margin: 0 auto;
+
+    @keyframes spin {
+        from{
+            transform: rotate(0deg);   
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+`
 
 
 export default App;
