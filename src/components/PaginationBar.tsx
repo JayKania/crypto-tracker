@@ -34,7 +34,7 @@ const PaginationBar = ({ coinsList, searchedCoins, page, pageHandler }: pageProp
 
     return (
         <StyledPaginationBarContainer className="pagination-container">
-            <StyledPageNumbersContainer>
+            <StyledPageNumbersContainer className="page-no-container">
                 <div className={`prev-page-container ${page === 1 ? "disable" : ""}`} onClick={() => { pageHandler(page !== 1 ? page - 1 : page) }}>
                     <div className={`prev-page ${page === 1 ? "disable" : ""}`}  ></div>
                 </div>
@@ -126,6 +126,9 @@ const StyledPageNumber = styled.div`
             cursor: pointer;
             background-color: rgb(25, 32, 84);
 
+        }
+        @media only screen and (max-width: 542px) {
+            display: none;
         }
 `;
 
