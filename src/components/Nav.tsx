@@ -77,6 +77,9 @@ const StyledNav = styled.nav`
         width: 100%;
         border-radius: 0;
         padding: 1rem 0.5rem;
+        margin: 0;
+        background-color: transparent;
+        box-shadow: none;
     }
 `;
 
@@ -109,8 +112,8 @@ const StyledSearchLoginContainer = styled.div`
 
 const StyledSearchBar = styled.input`
     background-color: transparent;
-    border: 1px solid rgb(255, 255, 255, 0.5);
-    border-radius: 20px;
+    border: 1px solid rgb(255, 255, 255, 0.2);
+    border-radius: 10px;
     padding: 0.7rem 1.2rem;
     outline: none;
     color: white;
@@ -118,6 +121,7 @@ const StyledSearchBar = styled.input`
 
     @media only screen and (max-width: 540px) {
         width: 180px;
+        box-shadow: none;
     }
 `;
 

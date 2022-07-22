@@ -6,6 +6,7 @@ import Nav from './components/Nav';
 import PaginationBar from "./components/PaginationBar";
 import Table from "./components/Table";
 import { Routes, Route } from "react-router-dom";
+import NavTableWrapper from "./components/NavTableWrapper";
 
 const App = () => {
 
@@ -55,8 +56,10 @@ const App = () => {
         <Route path="/" element={
           coinsList.length === 0 ? <StyledSpinner className="spinner" /> :
             <>
-              <Nav {...navPropsObj} />
-              <Table {...tablePropsObj} />
+              <NavTableWrapper>
+                <Nav {...navPropsObj} />
+                <Table {...tablePropsObj} />
+              </NavTableWrapper>
               <PaginationBar {...pagePropsObj} />
             </>}
         />
@@ -100,6 +103,5 @@ const StyledSpinner = styled.div`
       }
     }
 `
-
 
 export default App;

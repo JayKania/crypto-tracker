@@ -384,7 +384,7 @@ const StyldeDaysContainer = styled.div`
     margin: 1rem 0;
     .days {
       padding: 0.5rem;
-      font-size: 0.5rem;
+      font-size: 0.7rem;
     }
   }
 `;

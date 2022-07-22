@@ -169,6 +169,9 @@ const StyledTable = styled.div`
         width: 100%;
         border-radius: 0;
         padding: 1rem 0rem;
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
     }
 
 `;
