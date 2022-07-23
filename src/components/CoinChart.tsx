@@ -161,7 +161,9 @@ const CoinChart = () => {
 
     return (
       <StyledCurrencyData className="row row-currency-data">
-        <div className="coin-rank">{coinData.market_cap_rank}</div>
+        <div className="coin-rank-fav-container">
+          <span>{coinData.market_cap_rank}</span>
+        </div>
         <div className="coin-name-container" id={`${coinID}-container`}>
           <div className="coin-name">{coinData.name}</div>
           <div className="coin-symbol">{coinData.symbol}</div>
@@ -214,40 +216,43 @@ const CoinChart = () => {
       <StyledStatsContainer>
         <StyledHeader>
           <h4>Statistics</h4>
-          <StyldeDaysContainer>
-            <div
-              className={`days ${days === 1 ? "active" : ""}`}
-              onClick={() => {
-                dayHandler(1);
-              }}
-            >
-              24 Hours
-            </div>
-            <div
-              className={`days ${days === 30 ? "active" : ""}`}
-              onClick={() => {
-                dayHandler(30);
-              }}
-            >
-              30 Days
-            </div>
-            <div
-              className={`days ${days === 90 ? "active" : ""}`}
-              onClick={() => {
-                dayHandler(90);
-              }}
-            >
-              3 Months
-            </div>
-            <div
-              className={`days ${days === 365 ? "active" : ""}`}
-              onClick={() => {
-                dayHandler(365);
-              }}
-            >
-              1 Year
-            </div>
-          </StyldeDaysContainer>
+          <StyledFavDaysContainer className="fav-days-container">
+            <i className="fa fa-thin fa-star fa-2x"></i>
+            <StyldeDaysContainer>
+              <div
+                className={`days ${days === 1 ? "active" : ""}`}
+                onClick={() => {
+                  dayHandler(1);
+                }}
+              >
+                24 Hours
+              </div>
+              <div
+                className={`days ${days === 30 ? "active" : ""}`}
+                onClick={() => {
+                  dayHandler(30);
+                }}
+              >
+                30 Days
+              </div>
+              <div
+                className={`days ${days === 90 ? "active" : ""}`}
+                onClick={() => {
+                  dayHandler(90);
+                }}
+              >
+                3 Months
+              </div>
+              <div
+                className={`days ${days === 365 ? "active" : ""}`}
+                onClick={() => {
+                  dayHandler(365);
+                }}
+              >
+                1 Year
+              </div>
+            </StyldeDaysContainer>
+          </StyledFavDaysContainer>
         </StyledHeader>
         {window.screen.width > 542 ? <StyledChartContainer>
           <Line data={data} />
@@ -359,6 +364,25 @@ const StyledHeader = styled.div`
   }
 `;
 
+const StyledFavDaysContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  i {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: rgb(255,255,255, 0.5);
+  }
+  @media only screen and (max-width: 540px) {
+    width: 100%;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    i {
+      font-size: 1.2rem;
+    }
+  }
+`
+
 const StyldeDaysContainer = styled.div`
   display: flex;
   color: white;
@@ -448,7 +472,7 @@ const StyledCurrencyData = styled.div`
     width: 100%;
     text-align: right;
   }
-  .coin-rank {
+  .coin-rank-fav-container {
     flex-basis: 40%;
     text-align: left;
   }

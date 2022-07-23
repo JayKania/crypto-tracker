@@ -7,6 +7,8 @@ import PaginationBar from "./components/PaginationBar";
 import Table from "./components/Table";
 import { Routes, Route } from "react-router-dom";
 import NavTableWrapper from "./components/NavTableWrapper";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
 
 const App = () => {
 
@@ -14,11 +16,16 @@ const App = () => {
   const [coinsList, setCoinsList] = useState([]);
   const [searchedCoins, setSearcedCoins] = useState([]);
   const [page, setPage] = useState<number>(1);
+  const [openLoginModal, setOpenLoginModal] = useState(false);
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
   }, [page])
 
+  const loginModalHandler = (event: any) => {
+    event.preventDefault();
+    setOpenLoginModal(!openLoginModal);
+  }
 
   useEffect(() => {
     const getCoinsData = async () => {
@@ -40,7 +47,8 @@ const App = () => {
     coinsList: coinsList,
     setSearcedCoins: setSearcedCoins,
     page: page,
-    pageHandler: pageHandler
+    pageHandler: pageHandler,
+    loginModalHandler: loginModalHandler
   }
 
   const pagePropsObj = {
@@ -61,6 +69,8 @@ const App = () => {
                 <Table {...tablePropsObj} />
               </NavTableWrapper>
               <PaginationBar {...pagePropsObj} />
+              {/* <Login />
+              <SignUp /> */}
             </>}
         />
         <Route path="coins" element={<CoinChart />}>

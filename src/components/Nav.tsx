@@ -5,7 +5,8 @@ interface navprops {
     coinsList: coin[]
     setSearcedCoins: any,
     page: number,
-    pageHandler: any
+    pageHandler: any,
+    loginModalHandler: any,
 }
 
 interface coin {
@@ -20,7 +21,7 @@ interface coin {
     total_volume: number,
     circulating_supply: number,
 }
-const Nav = ({ setSearcedCoins, coinsList, page, pageHandler }: navprops) => {
+const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler }: navprops) => {
 
 
     const [input, setInput] = useState("");
@@ -55,7 +56,8 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler }: navprops) => {
             <StyledLink className="icon" href="/"><i className="fa fa-brands fa-bitcoin fa-lg"></i></StyledLink>
             <StyledSearchLoginContainer className="search-login-container">
                 <StyledSearchBar placeholder="Search" onChange={inputHandler} value={input} />
-                <StyledLink href="#" className="login-link" >LOG IN</StyledLink>
+                <StyledLink className="login-link" onClick={loginModalHandler}>LOG IN</StyledLink>
+                <StyledLink className="signup-link" >SIGN UP</StyledLink>
             </StyledSearchLoginContainer>
         </StyledNav>
     )
@@ -94,7 +96,14 @@ const StyledLink = styled.a`
         cursor: pointer;
     }
     &.icon {
-        color: white;
+        color: rgb(255, 255, 255, 0.7);
+    }
+
+    &.signup-link {
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        transition: box-shadow 200ms ease;
+        border: 1px solid #ccc;
     }
 
     @media only screen and (max-width: 540px) {

@@ -8,7 +8,7 @@
 body {
   margin: 0;
   font-family: "Noto Sans", sans-serif;
-  background-color: #0d1449;
+  background-color: hsl(233, 70%, 17%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

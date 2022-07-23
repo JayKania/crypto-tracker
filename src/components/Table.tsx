@@ -89,7 +89,10 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
 
 
         return <StyledCurrencyData className="row row-currency-data" key={id}>
-            <div className="coin-rank">{market_cap_rank}</div>
+            <div className="coin-rank-fav-container">
+                <span>{market_cap_rank}</span>
+                <i className="fa fa-thin fa-star"></i>
+            </div>
             <div className="coin-name-container" id={`${id}-container`} onClick={() => { routeHandler(id.toString()) }}>
                 <div className="coin-image">
                     <img src={image} alt={symbol} />
@@ -214,9 +217,23 @@ const StyledCurrencyData = styled.div`
         width: 100%;
         text-align: right;
     }
-    .coin-rank {
+    .coin-rank-fav-container {
         flex-basis: 40%;
         text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        i {
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke-width: 1px;
+            -webkit-text-stroke-color: rgb(255,255,255, 0.5);
+        }
+        @media only screen and (max-width: 540px) {
+            i {
+                display: none;
+            }
+        }
     }
     .coin-name-container {
         display: flex;
