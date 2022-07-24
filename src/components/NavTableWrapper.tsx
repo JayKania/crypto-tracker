@@ -1,8 +1,6 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const NavTableWrapper = (children: any) => {
-    console.log(children.children[0]);
     const markup = children.children.map((child: any) => {
         return child;
     })

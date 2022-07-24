@@ -1,30 +1,38 @@
+import { useState } from "react"
 import styled from "styled-components"
 
 const Login = () => {
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const inputHandler = (event: any) => {
+        if (event.target.id === "user") {
+            setUsername(event.target.value);
+        } else {
+            setPassword(event.target.value);
+        }
+    }
+
     return (
-        <StyledLoginContainer>
-            <StyledLoginContent onSubmit={(event: any) => { event?.preventDefault() }} >
-                <h2>Login</h2>
-                <div className="username-container">
-                    <label htmlFor="user">Username</label>
-                    <input type="text" name="username" id="user" placeholder="Enter Username" />
-                </div>
-                <div className="password-container">
-                    <label htmlFor="pass">Password</label>
-                    <input type="text" name="password" id="pass" placeholder="Enter Password" />
-                </div>
-                <button>Submit</button>
-            </StyledLoginContent>
-        </StyledLoginContainer>
+        <StyledLoginContent onSubmit={(event: any) => { event?.preventDefault() }} >
+            <h2>Login</h2>
+            <div className="username-container">
+                <label htmlFor="user">Username</label>
+                <input type="text" name="username" id="user" placeholder="Enter Username" value={username} onChange={inputHandler} />
+            </div>
+            <div className="password-container">
+                <label htmlFor="pass">Password</label>
+                <input type="text" name="password" id="pass" placeholder="Enter Password" value={password} onChange={inputHandler} />
+            </div>
+            <div className="new-acc">
+                <a>Don't have an account?  Sing Up</a>
+            </div>
+            <button>Submit</button>
+        </StyledLoginContent>
     )
 }
 
-const StyledLoginContainer = styled.div`
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    z-index: 1;
-`;
 
 const StyledLoginContent = styled.form`
     width: 450px;
@@ -32,7 +40,7 @@ const StyledLoginContent = styled.form`
     margin: 0 auto;
     padding: 1rem 2rem;
     border-radius: 10px;
-    box-shadow: 2px 2px 10px 5px rgb(9, 14, 52);
+    box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
 
     h2 {
         color: white;
@@ -60,7 +68,19 @@ const StyledLoginContent = styled.form`
             border-radius: 10px;
         }
     }
-    
+
+    .new-acc {
+        font-weight: 200;
+        a {
+            color: white;
+            text-decoration: underline;
+            :hover {
+                cursor: pointer;
+            }  
+        }
+    }
+
+
     button {
         width: 100%;
         color: rgb(255, 255, 255, 0.7);
@@ -72,11 +92,11 @@ const StyledLoginContent = styled.form`
         font-size: 1.2rem;
         margin: 2rem 0;
         font-weight: 600;
-        box-shadow:0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
         :hover {
             cursor: pointer;
         }
     }
+
 `;
 
 export default Login

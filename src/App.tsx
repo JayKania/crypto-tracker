@@ -9,6 +9,7 @@ import { Routes, Route } from "react-router-dom";
 import NavTableWrapper from "./components/NavTableWrapper";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import Modal from "./components/Modal";
 
 const App = () => {
 
@@ -17,14 +18,24 @@ const App = () => {
   const [searchedCoins, setSearcedCoins] = useState([]);
   const [page, setPage] = useState<number>(1);
   const [openLoginModal, setOpenLoginModal] = useState(false);
+  const [openSignUpModal, setOpenSignUpModal] = useState(false);
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
   }, [page])
 
   const loginModalHandler = (event: any) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    };
     setOpenLoginModal(!openLoginModal);
+  }
+
+  const signupModalHandler = (event: any) => {
+    if (event) {
+      event.preventDefault();
+    };
+    setOpenSignUpModal(!openSignUpModal);
   }
 
   useEffect(() => {
@@ -48,7 +59,8 @@ const App = () => {
     setSearcedCoins: setSearcedCoins,
     page: page,
     pageHandler: pageHandler,
-    loginModalHandler: loginModalHandler
+    loginModalHandler: loginModalHandler,
+    signupModalHandler: signupModalHandler,
   }
 
   const pagePropsObj = {
@@ -69,14 +81,18 @@ const App = () => {
                 <Table {...tablePropsObj} />
               </NavTableWrapper>
               <PaginationBar {...pagePropsObj} />
-              {/* <Login />
-              <SignUp /> */}
             </>}
         />
         <Route path="coins" element={<CoinChart />}>
           <Route path=":coinID" element={<CoinChart />} />
         </Route>
       </Routes>
+      <Modal openModal={openLoginModal} closeModal={loginModalHandler}>
+        <Login />
+      </Modal>
+      <Modal openModal={openSignUpModal} closeModal={signupModalHandler} >
+        <SignUp />
+      </Modal>
     </StyledApp>
   );
 }

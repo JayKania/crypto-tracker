@@ -7,6 +7,7 @@ interface navprops {
     page: number,
     pageHandler: any,
     loginModalHandler: any,
+    signupModalHandler: any
 }
 
 interface coin {
@@ -21,7 +22,7 @@ interface coin {
     total_volume: number,
     circulating_supply: number,
 }
-const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler }: navprops) => {
+const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler }: navprops) => {
 
 
     const [input, setInput] = useState("");
@@ -57,7 +58,7 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler 
             <StyledSearchLoginContainer className="search-login-container">
                 <StyledSearchBar placeholder="Search" onChange={inputHandler} value={input} />
                 <StyledLink className="login-link" onClick={loginModalHandler}>LOG IN</StyledLink>
-                <StyledLink className="signup-link" >SIGN UP</StyledLink>
+                <StyledLink className="signup-link" onClick={signupModalHandler} >SIGN UP</StyledLink>
             </StyledSearchLoginContainer>
         </StyledNav>
     )

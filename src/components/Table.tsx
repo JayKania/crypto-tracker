@@ -54,7 +54,6 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
     }
 
     const routeHandler = (id: string) => {
-        console.log(id);
         navigate("/coins/" + id);
     }
 
