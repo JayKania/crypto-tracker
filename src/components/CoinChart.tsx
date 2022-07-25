@@ -4,11 +4,14 @@ import {
   Legend, LinearScale, LineElement, PointElement, Title,
   Tooltip
 } from "chart.js";
+import { User } from "firebase/auth";
+import { doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { db } from "../firebaseConfig";
 
 ChartJS.register(
   CategoryScale,
@@ -21,7 +24,13 @@ ChartJS.register(
   Filler
 );
 
-const CoinChart = () => {
+interface coinChartProps {
+  userFavs: string[],
+  handleFavs: any;
+  user: User | undefined | null,
+}
+
+const CoinChart = ({ userFavs, handleFavs, user }: coinChartProps) => {
   const [coinPrices, setCoinPrices] = useState([]);
   const [days, setDays] = useState(1);
   const [coinData, setCoinData] = useState<any>([]);
@@ -112,9 +121,6 @@ const CoinChart = () => {
         // It is recommended to specify `position` and / or `axis` explicitly.
         display: false
       },
-      // y: {
-      //   display: false
-      // },
     },
   };
 
@@ -154,7 +160,7 @@ const CoinChart = () => {
 
     return (
       <StyledCurrencyData className="row row-currency-data">
-        <div className="coin-rank-fav-container">
+        <div className="coin-rank-container">
           <span>{coinData.market_cap_rank}</span>
         </div>
         <div className="coin-name-container" id={`${coinID}-container`}>
@@ -202,7 +208,37 @@ const CoinChart = () => {
     return <StyledSpinner className="spinner" />;
   }
 
+  const favouriteHandler = async (id: string | undefined) => {
+    if (!user) {
+      alert("Please Login first!");
+      return;
+    }
 
+    console.log(id);
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    const docData: DocumentData | undefined = docSnap.data();
+    if (docData) {
+      if (docData.favourites.includes(id)) {
+        const tempFavourites = docData?.favourites.filter((coin: any) => {
+          return coin !== id;
+        });
+        await setDoc(docRef, {
+          favourites: [...tempFavourites]
+        }, {
+          merge: true,
+        })
+        handleFavs(tempFavourites)
+      } else {
+        await setDoc(docRef, {
+          favourites: [...docData?.favourites, id],
+        }, {
+          merge: true,
+        });
+        handleFavs([...docData?.favourites, id])
+      }
+    }
+  }
 
   return (
     <StyledCoinChartContainer>
@@ -210,7 +246,7 @@ const CoinChart = () => {
         <StyledHeader>
           <h4>Statistics</h4>
           <StyledFavDaysContainer className="fav-days-container">
-            <i className="fa fa-thin fa-star fa-2x"></i>
+            <i className={`fa fa-thin fa-star fa-2x ${coinID ? userFavs.includes(coinID.toString()) ? "fav-coin" : "" : ""}`} onClick={() => favouriteHandler(coinID?.toString())}></i>
             <StyldeDaysContainer>
               <div
                 className={`days ${days === 1 ? "active" : ""}`}
@@ -365,6 +401,10 @@ const StyledFavDaysContainer = styled.div`
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: rgb(255,255,255, 0.5);
+    &.fav-coin {
+      -webkit-text-stroke-width: 0;
+      -webkit-text-fill-color: yellow;
+    }
   }
   @media only screen and (max-width: 540px) {
     width: 100%;
@@ -465,7 +505,7 @@ const StyledCurrencyData = styled.div`
     width: 100%;
     text-align: right;
   }
-  .coin-rank-fav-container {
+  .coin-rank-container {
     flex-basis: 40%;
     text-align: left;
   }

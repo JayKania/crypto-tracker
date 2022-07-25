@@ -10,7 +10,9 @@ import NavTableWrapper from "./components/NavTableWrapper";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Modal from "./components/Modal";
-import { auth } from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
+import { signOut, User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const App = () => {
 
@@ -20,7 +22,8 @@ const App = () => {
   const [page, setPage] = useState<number>(1);
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<User | null>();
+  const [userFavs, setUserFavs] = useState<string[]>([]);
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
@@ -36,6 +39,15 @@ const App = () => {
     setOpenSignUpModal(!openSignUpModal);
   }
 
+  const handleFavs = (favs: string[]) => {
+    setUserFavs([...favs]);
+  }
+
+  const handleLogout = () => {
+    signOut(auth);
+    handleFavs([]);
+  }
+
   useEffect(() => {
     const getCoinsData = async () => {
       const response_1 = await axios(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=150&page=1&sparkline=false`);
@@ -44,16 +56,33 @@ const App = () => {
       setCoinsList(response);
     }
     getCoinsData();
-    auth.onAuthStateChanged(user => {
-      console.log(user);
-      setUser(user)
+    auth.onAuthStateChanged(userData => {
+      console.log(userData);
+      setUser(userData);
     })
-  }, []);
+
+    const getUserFavs = async () => {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        const docData = docSnap.data();
+        if (docData) {
+          handleFavs([...docData.favourites]);
+        }
+      }
+    }
+
+    getUserFavs();
+
+  }, [user]);
 
   const tablePropsObj = {
     coinsList: coinsList,
     searchedCoins: searchedCoins,
-    page: page
+    page: page,
+    user: user,
+    userFavs: userFavs,
+    handleFavs: handleFavs,
   }
 
   const navPropsObj = {
@@ -63,22 +92,22 @@ const App = () => {
     pageHandler: pageHandler,
     loginModalHandler: loginModalHandler,
     signupModalHandler: signupModalHandler,
-    user: user
+    user: user,
+    handleLogout: handleLogout
   }
 
   const pagePropsObj = {
     coinsList: coinsList,
     searchedCoins: searchedCoins,
     page: page,
-    pageHandler: pageHandler
+    pageHandler: pageHandler,
+    // user: user
   }
 
-  const loginPropsObj = {
-    loginModalHandler: loginModalHandler,
-  }
-
-  const signupPropsObj = {
-    signupModalHandler: signupModalHandler,
+  const coinChartPropsObj = {
+    userFavs: userFavs,
+    handleFavs: handleFavs,
+    user: user,
   }
 
   return (
@@ -93,9 +122,19 @@ const App = () => {
               </NavTableWrapper>
               <PaginationBar {...pagePropsObj} />
             </>}
-        />
-        <Route path="coins" element={<CoinChart />}>
-          <Route path=":coinID" element={<CoinChart />} />
+        >
+        </Route>
+        <Route path="coins" element={<CoinChart {...coinChartPropsObj} />}>
+          {/* <Route
+              index
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>Select a Coin</p>
+                </main>
+              }
+            /> */}
+          <Route path=":coinID" element={<CoinChart {...coinChartPropsObj} />} />
+          <Route path="*" element={<div>Hello</div>} />
         </Route>
       </Routes>
       <Modal openModal={openLoginModal} closeModal={loginModalHandler}>

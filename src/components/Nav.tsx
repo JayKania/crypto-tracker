@@ -1,7 +1,6 @@
-import { signOut } from "firebase/auth";
+import { User } from "firebase/auth";
 import { useState } from "react";
 import styled from "styled-components";
-import { auth } from "../firebaseConfig";
 
 interface navprops {
     coinsList: coin[]
@@ -10,7 +9,8 @@ interface navprops {
     pageHandler: any,
     loginModalHandler: any,
     signupModalHandler: any,
-    user: any
+    handleLogout: any,
+    user: User | undefined | null,
 }
 
 interface coin {
@@ -25,7 +25,7 @@ interface coin {
     total_volume: number,
     circulating_supply: number,
 }
-const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler, user }: navprops) => {
+const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler, user, handleLogout }: navprops) => {
 
 
     const [input, setInput] = useState("");
@@ -50,14 +50,13 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler,
 
     }
 
-
     return (
         <StyledNav>
             <StyledLink className="icon" href="/"><i className="fa fa-brands fa-bitcoin fa-lg"></i></StyledLink>
             <StyledSearchLoginContainer className="search-login-container">
                 <StyledSearchBar placeholder="Search" onChange={inputHandler} value={input} />
 
-                {user ? <StyledLink className="logout-link" onClick={() => signOut(auth)}>LOG OUT</StyledLink> :
+                {user ? <StyledLink className="logout-link" onClick={handleLogout}>LOG OUT</StyledLink> :
                     <>
                         <StyledLink className="login-link" onClick={loginModalHandler}>LOG IN</StyledLink>
                         <StyledLink className="signup-link" onClick={signupModalHandler} >SIGN UP</StyledLink>

@@ -1,12 +1,18 @@
+import { User } from "firebase/auth";
+import { doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { db } from "../firebaseConfig";
 
 
 interface tableProps {
     coinsList: coin[],
     searchedCoins: coin[],
-    page: number
+    page: number,
+    user: User | undefined | null,
+    userFavs: string[],
+    handleFavs: any,
 }
 
 interface coin {
@@ -22,7 +28,7 @@ interface coin {
     circulating_supply: number,
 }
 
-const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
+const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: tableProps) => {
 
     console.group("table logs")
 
@@ -57,6 +63,38 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
         navigate("/coins/" + id);
     }
 
+    const favouriteHandler = async (id: string) => {
+        if (!user) {
+            alert("Please Login first!");
+            return;
+        }
+
+        console.log(id);
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        const docData: DocumentData | undefined = docSnap.data();
+        if (docData) {
+            if (docData.favourites.includes(id)) {
+                const tempFavourites = docData?.favourites.filter((coin: any) => {
+                    return coin !== id;
+                });
+                await setDoc(docRef, {
+                    favourites: [...tempFavourites]
+                }, {
+                    merge: true,
+                })
+                handleFavs(tempFavourites)
+            } else {
+                await setDoc(docRef, {
+                    favourites: [...docData?.favourites, id],
+                }, {
+                    merge: true,
+                });
+                handleFavs([...docData?.favourites, id])
+            }
+        }
+    }
+
     let listOfCoins: coin[];
 
     if (searchedCoins.length !== 0) {
@@ -86,11 +124,10 @@ const Table = ({ coinsList, searchedCoins, page }: tableProps) => {
         const new_total_volume: any = convertToInternationalCurrencySystem(total_volume);
         const new_circulating_supply: any = convertToInternationalCurrencySystem(circulating_supply);
 
-
         return <StyledCurrencyData className="row row-currency-data" key={id}>
             <div className="coin-rank-fav-container">
                 <span>{market_cap_rank}</span>
-                <i className="fa fa-thin fa-star"></i>
+                <i className={`fa fa-thin fa-star ${userFavs.includes(id.toString()) ? "fav-coin" : ""}`} onClick={() => favouriteHandler(id.toString())}></i>
             </div>
             <div className="coin-name-container" id={`${id}-container`} onClick={() => { routeHandler(id.toString()) }}>
                 <div className="coin-image">
@@ -227,6 +264,10 @@ const StyledCurrencyData = styled.div`
             -webkit-text-fill-color: transparent;
             -webkit-text-stroke-width: 1px;
             -webkit-text-stroke-color: rgb(255,255,255, 0.5);
+            &.fav-coin {
+                -webkit-text-stroke-width: 0;
+                -webkit-text-fill-color: yellow;
+            }
         }
         @media only screen and (max-width: 540px) {
             i {

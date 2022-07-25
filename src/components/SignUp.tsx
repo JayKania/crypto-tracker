@@ -1,7 +1,8 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import styled from "styled-components"
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
+import { setDoc, doc } from "firebase/firestore"
 
 interface signupProps {
     signupModalHandler: any,
@@ -33,6 +34,12 @@ const SignUp = ({ signupModalHandler }: signupProps) => {
             console.log(data.user);
             await updateProfile(data.user, {
                 displayName: username
+            })
+
+            const docRef = doc(db, "users", data.user.uid);
+            await setDoc(docRef, {
+                name: username,
+                favourites: [],
             })
             signupModalHandler();
             setLoading(false);
