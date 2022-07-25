@@ -1,34 +1,57 @@
-import { useState } from "react"
-import styled from "styled-components"
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { useState } from "react";
+import styled from "styled-components";
+import { auth } from "../firebaseConfig";
 
-const Login = () => {
+interface loginProps {
+    loginModalHandler: any,
+}
 
-    const [username, setUsername] = useState("");
+const Login = ({ loginModalHandler }: loginProps) => {
+
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [loading, setLoading] = useState(false);
+
+    const submitHandler = async (event: any) => {
+        event.preventDefault();
+        try {
+            setLoading(true);
+            const data = await signInWithEmailAndPassword(auth, email, password);
+            console.log(data.user);
+            loginModalHandler();
+            setLoading(false);
+        } catch (err: any) {
+            console.log(err.code);
+            setLoading(false);
+        }
+        // signOut(auth);
+    }
+
     const inputHandler = (event: any) => {
-        if (event.target.id === "user") {
-            setUsername(event.target.value);
+        if (event.target.id === "email") {
+            setEmail(event.target.value);
         } else {
             setPassword(event.target.value);
         }
     }
 
     return (
-        <StyledLoginContent onSubmit={(event: any) => { event?.preventDefault() }} >
+        <StyledLoginContent onSubmit={submitHandler} >
             <h2>Login</h2>
-            <div className="username-container">
-                <label htmlFor="user">Username</label>
-                <input type="text" name="username" id="user" placeholder="Enter Username" value={username} onChange={inputHandler} />
+            <div className="email-container">
+                <label htmlFor="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter Email" value={email} onChange={inputHandler} required />
             </div>
             <div className="password-container">
                 <label htmlFor="pass">Password</label>
-                <input type="text" name="password" id="pass" placeholder="Enter Password" value={password} onChange={inputHandler} />
+                <input type="text" name="password" id="pass" placeholder="Enter Password" value={password} onChange={inputHandler} required />
             </div>
             <div className="new-acc">
                 <a>Don't have an account?  Sing Up</a>
             </div>
-            <button>Submit</button>
+            <button disabled={loading}>Submit</button>
         </StyledLoginContent>
     )
 }
@@ -41,6 +64,7 @@ const StyledLoginContent = styled.form`
     padding: 1rem 2rem;
     border-radius: 10px;
     box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
+    animation: top-center 300ms ease 1;
 
     h2 {
         color: white;
@@ -50,7 +74,7 @@ const StyledLoginContent = styled.form`
         text-align: center;
     }
 
-    .username-container, .password-container {
+    .email-container, .password-container {
         display: flex;
         flex-direction: column;
         margin-bottom: 2rem;
@@ -83,8 +107,8 @@ const StyledLoginContent = styled.form`
 
     button {
         width: 100%;
-        color: rgb(255, 255, 255, 0.7);
-        background-color: #29699e;
+        color: rgb(255, 255, 255);
+        background-color: rgb(41, 105, 158);
         border: none;
         padding: 1rem;
         border-radius: 10px;
@@ -94,6 +118,25 @@ const StyledLoginContent = styled.form`
         font-weight: 600;
         :hover {
             cursor: pointer;
+        }
+        :disabled {
+            background-color: rgb(41, 105, 158, 0.5);
+        }
+
+        :hover:disabled {
+            cursor: default;
+        }
+    }
+
+    @keyframes top-center {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
         }
     }
 

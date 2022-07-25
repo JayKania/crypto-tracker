@@ -1,5 +1,7 @@
+import { signOut } from "firebase/auth";
 import { useState } from "react";
 import styled from "styled-components";
+import { auth } from "../firebaseConfig";
 
 interface navprops {
     coinsList: coin[]
@@ -7,7 +9,8 @@ interface navprops {
     page: number,
     pageHandler: any,
     loginModalHandler: any,
-    signupModalHandler: any
+    signupModalHandler: any,
+    user: any
 }
 
 interface coin {
@@ -22,7 +25,7 @@ interface coin {
     total_volume: number,
     circulating_supply: number,
 }
-const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler }: navprops) => {
+const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler, user }: navprops) => {
 
 
     const [input, setInput] = useState("");
@@ -36,10 +39,6 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler,
         if (searchInput.trim()) {
             newCoinsList = coinsList.filter(coin => {
                 let name = coin.name.toLowerCase();
-                if (name.startsWith(searchInput) || name.includes(searchInput)) {
-                    // console.log(coin.name);
-
-                }
                 return name.startsWith(searchInput) || name.includes(searchInput);
             })
         }
@@ -57,8 +56,12 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler,
             <StyledLink className="icon" href="/"><i className="fa fa-brands fa-bitcoin fa-lg"></i></StyledLink>
             <StyledSearchLoginContainer className="search-login-container">
                 <StyledSearchBar placeholder="Search" onChange={inputHandler} value={input} />
-                <StyledLink className="login-link" onClick={loginModalHandler}>LOG IN</StyledLink>
-                <StyledLink className="signup-link" onClick={signupModalHandler} >SIGN UP</StyledLink>
+
+                {user ? <StyledLink className="logout-link" onClick={() => signOut(auth)}>LOG OUT</StyledLink> :
+                    <>
+                        <StyledLink className="login-link" onClick={loginModalHandler}>LOG IN</StyledLink>
+                        <StyledLink className="signup-link" onClick={signupModalHandler} >SIGN UP</StyledLink>
+                    </>}
             </StyledSearchLoginContainer>
         </StyledNav>
     )

@@ -10,6 +10,7 @@ import NavTableWrapper from "./components/NavTableWrapper";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Modal from "./components/Modal";
+import { auth } from "./firebaseConfig";
 
 const App = () => {
 
@@ -19,22 +20,19 @@ const App = () => {
   const [page, setPage] = useState<number>(1);
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
+  const [user, setUser] = useState<any>();
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
   }, [page])
 
   const loginModalHandler = (event: any) => {
-    if (event) {
-      event.preventDefault();
-    };
+    // event?.preventDefault();
     setOpenLoginModal(!openLoginModal);
   }
 
   const signupModalHandler = (event: any) => {
-    if (event) {
-      event.preventDefault();
-    };
+    event?.preventDefault();
     setOpenSignUpModal(!openSignUpModal);
   }
 
@@ -46,6 +44,10 @@ const App = () => {
       setCoinsList(response);
     }
     getCoinsData();
+    auth.onAuthStateChanged(user => {
+      console.log(user);
+      setUser(user)
+    })
   }, []);
 
   const tablePropsObj = {
@@ -61,6 +63,7 @@ const App = () => {
     pageHandler: pageHandler,
     loginModalHandler: loginModalHandler,
     signupModalHandler: signupModalHandler,
+    user: user
   }
 
   const pagePropsObj = {
@@ -68,6 +71,14 @@ const App = () => {
     searchedCoins: searchedCoins,
     page: page,
     pageHandler: pageHandler
+  }
+
+  const loginPropsObj = {
+    loginModalHandler: loginModalHandler,
+  }
+
+  const signupPropsObj = {
+    signupModalHandler: signupModalHandler,
   }
 
   return (
@@ -88,10 +99,10 @@ const App = () => {
         </Route>
       </Routes>
       <Modal openModal={openLoginModal} closeModal={loginModalHandler}>
-        <Login />
+        <Login loginModalHandler={loginModalHandler} />
       </Modal>
       <Modal openModal={openSignUpModal} closeModal={signupModalHandler} >
-        <SignUp />
+        <SignUp signupModalHandler={signupModalHandler} />
       </Modal>
     </StyledApp>
   );

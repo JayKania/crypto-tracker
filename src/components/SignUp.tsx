@@ -1,34 +1,66 @@
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import styled from "styled-components"
+import { auth } from "../firebaseConfig";
 
-const SignUp = () => {
+interface signupProps {
+    signupModalHandler: any,
+}
+
+const SignUp = ({ signupModalHandler }: signupProps) => {
 
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
 
     const inputHandler = (event: any) => {
         if (event.target.id === "user") {
             setUsername(event.target.value);
+        } else if (event.target.id === "email") {
+            setEmail(event.target.value);
         } else {
             setPassword(event.target.value);
         }
     }
 
+    const submitHandler = async (event: any) => {
+        event.preventDefault();
+        try {
+            setLoading(true);
+            const data = await createUserWithEmailAndPassword(auth, email, password)
+            console.log(data.user);
+            await updateProfile(data.user, {
+                displayName: username
+            })
+            signupModalHandler();
+            setLoading(false);
+        } catch (err: any) {
+            console.log(err.code);
+            setLoading(false);
+        }
+    }
+
     return (
-        <StyledSignUpContent onSubmit={(event: any) => { event?.preventDefault() }} >
+        <StyledSignUpContent onSubmit={submitHandler} >
             <h2>Sign Up</h2>
             <div className="username-container">
                 <label htmlFor="user">Username</label>
-                <input type="text" name="username" id="user" placeholder="Enter Username" onChange={inputHandler} />
+                <input type="text" name="username" id="user" placeholder="Enter Username" onChange={inputHandler} value={username} required />
+            </div>
+            <div className="email-container">
+                <label htmlFor="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter Email" onChange={inputHandler} value={email} required />
             </div>
             <div className="password-container">
                 <label htmlFor="pass">Password</label>
-                <input type="text" name="password" id="pass" placeholder="Enter Password" onChange={inputHandler} />
+                <input type="text" name="password" id="pass" placeholder="Enter Password" onChange={inputHandler} value={password} required />
             </div>
             <div className="existing-acc">
                 <a>Already have an account?</a>
             </div>
-            <button>Submit</button>
+            <button disabled={loading}>Submit</button>
         </StyledSignUpContent>
     )
 }
@@ -40,6 +72,7 @@ const StyledSignUpContent = styled.form`
     padding: 1rem 2rem;
     border-radius: 10px;
     box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
+    animation: top-center 300ms ease 1;
 
     h2 {
         color: white;
@@ -49,7 +82,7 @@ const StyledSignUpContent = styled.form`
         text-align: center;
     }
 
-    .username-container, .password-container {
+    .email-container, .username-container, .password-container {
         display: flex;
         flex-direction: column;
         margin-bottom: 2rem;
@@ -82,7 +115,7 @@ const StyledSignUpContent = styled.form`
     button {
         width: 100%;
         color: rgb(255, 255, 255, 0.7);
-        background-color: #29699e;
+        background-color: rgb(41, 105, 158);
         border: none;
         padding: 1rem;
         border-radius: 10px;
@@ -93,10 +126,29 @@ const StyledSignUpContent = styled.form`
         :hover {
             cursor: pointer;
         }
+        :disabled {
+            background-color: rgb(41, 105, 158, 0.5);
+        }
+
+        :hover:disabled {
+            cursor: default;
+        }
     }
 
     @media only screen and (max-width: 540px) {
         width: 100%;
+    }
+
+    @keyframes top-center {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 `;
 

@@ -1,17 +1,10 @@
 import axios from "axios";
-import parse from "html-react-parser";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend,
-  Chart,
+  CategoryScale, Chart as ChartJS, Filler,
+  Legend, LinearScale, LineElement, PointElement, Title,
+  Tooltip
 } from "chart.js";
+import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "react-router-dom";
