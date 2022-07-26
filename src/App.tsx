@@ -1,18 +1,18 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import styled from "styled-components";
-import CoinChart from "./components/CoinChart";
-import Nav from './components/Nav';
-import PaginationBar from "./components/PaginationBar";
-import Table from "./components/Table";
-import { Routes, Route } from "react-router-dom";
-import NavTableWrapper from "./components/NavTableWrapper";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import Modal from "./components/Modal";
-import { auth, db } from "./firebaseConfig";
 import { signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import styled from "styled-components";
+import CoinChart from "./components/CoinChart";
+import Login from "./components/Login";
+import Modal from "./components/Modal";
+import Nav from './components/Nav';
+import NavTableWrapper from "./components/NavTableWrapper";
+import PaginationBar from "./components/PaginationBar";
+import SignUp from "./components/SignUp";
+import Table from "./components/Table";
+import { auth, db } from "./firebaseConfig";
 
 const App = () => {
 
@@ -22,8 +22,9 @@ const App = () => {
   const [page, setPage] = useState<number>(1);
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
-  const [user, setUser] = useState<User | null>();
+  const [user, setUser] = useState<User | null>(null);
   const [userFavs, setUserFavs] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
@@ -35,7 +36,6 @@ const App = () => {
   }
 
   const signupModalHandler = (event: any) => {
-    event?.preventDefault();
     setOpenSignUpModal(!openSignUpModal);
   }
 
@@ -49,6 +49,13 @@ const App = () => {
   }
 
   useEffect(() => {
+    auth.onAuthStateChanged(userData => {
+      console.log(userData);
+      setUser(userData);
+      setLoading(false);
+    })
+
+
     const getCoinsData = async () => {
       const response_1 = await axios(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=150&page=1&sparkline=false`);
       const response_2 = await axios(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=150&page=2&sparkline=false`);
@@ -56,10 +63,6 @@ const App = () => {
       setCoinsList(response);
     }
     getCoinsData();
-    auth.onAuthStateChanged(userData => {
-      console.log(userData);
-      setUser(userData);
-    })
 
     const getUserFavs = async () => {
       if (user) {
@@ -73,8 +76,7 @@ const App = () => {
     }
 
     getUserFavs();
-
-  }, [user]);
+  }, [loading]);
 
   const tablePropsObj = {
     coinsList: coinsList,
@@ -108,6 +110,10 @@ const App = () => {
     userFavs: userFavs,
     handleFavs: handleFavs,
     user: user,
+  }
+
+  if (loading) {
+    return <StyledSpinner className="spinner" />
   }
 
   return (
