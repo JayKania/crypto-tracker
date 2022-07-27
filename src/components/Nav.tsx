@@ -11,6 +11,7 @@ interface navprops {
     signupModalHandler: any,
     handleLogout: any,
     user: User | undefined | null,
+    handleMobileMenu: any,
 }
 
 interface coin {
@@ -25,7 +26,7 @@ interface coin {
     total_volume: number,
     circulating_supply: number,
 }
-const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler, user, handleLogout }: navprops) => {
+const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler, signupModalHandler, user, handleLogout, handleMobileMenu }: navprops) => {
 
 
     const [input, setInput] = useState("");
@@ -52,7 +53,14 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler,
 
     return (
         <StyledNav>
-            <StyledLink className="icon" href="/"><i className="fa fa-brands fa-bitcoin fa-lg"></i></StyledLink>
+            <div className="logo-menu-wrapper">
+                <StyledLink className="burger-menu" onClick={handleMobileMenu}>
+                    <i className="fa fa-solid fa-bars fa-lg"></i>
+                </StyledLink>
+                <StyledLink className="icon" href="/">
+                    <i className="fa fa-brands fa-bitcoin fa-lg"></i>
+                </StyledLink>
+            </div>
             <StyledSearchLoginContainer className="search-login-container">
                 <StyledSearchBar placeholder="Search" onChange={inputHandler} value={input} />
 
@@ -109,9 +117,16 @@ const StyledLink = styled.a`
         border: 1px solid #ccc;
     }
 
+    &.burger-menu {
+        display: none;
+    }
+
     @media only screen and (max-width: 540px) {
-        &.login-link {
+        &.login-link, &.signup-link, &.logout-link {
             display: none;
+        }
+        &.burger-menu {
+            display: inline-block;
         }
     }
 `

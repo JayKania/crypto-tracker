@@ -6,9 +6,10 @@ import { setDoc, doc } from "firebase/firestore"
 
 interface signupProps {
     signupModalHandler: any,
+    loginModalHandler: any
 }
 
-const SignUp = ({ signupModalHandler }: signupProps) => {
+const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -62,10 +63,10 @@ const SignUp = ({ signupModalHandler }: signupProps) => {
             </div>
             <div className="password-container">
                 <label htmlFor="pass">Password</label>
-                <input type="text" name="password" id="pass" placeholder="Enter Password" onChange={inputHandler} value={password} required />
+                <input type="password" name="password" id="pass" placeholder="Enter Password" onChange={inputHandler} value={password} required />
             </div>
             <div className="existing-acc">
-                <a>Already have an account?</a>
+                <a onClick={loginModalHandler}>Already have an account?</a>
             </div>
             <button disabled={loading}>Submit</button>
         </StyledSignUpContent>
@@ -121,8 +122,8 @@ const StyledSignUpContent = styled.form`
 
     button {
         width: 100%;
-        color: rgb(255, 255, 255, 0.7);
-        background-color: rgb(41, 105, 158);
+        color: rgb(255, 255, 255);
+        background-color: rgb(41, 98, 255);
         border: none;
         padding: 1rem;
         border-radius: 10px;
@@ -134,7 +135,8 @@ const StyledSignUpContent = styled.form`
             cursor: pointer;
         }
         :disabled {
-            background-color: rgb(41, 105, 158, 0.5);
+            color: rgb(255, 255, 255, 0.5);
+            background-color: rgb(41, 98, 255, 0.5);
         }
 
         :hover:disabled {

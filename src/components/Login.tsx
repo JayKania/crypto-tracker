@@ -5,9 +5,10 @@ import { auth } from "../firebaseConfig";
 
 interface loginProps {
     loginModalHandler: any,
+    signupModalHandler: any
 }
 
-const Login = ({ loginModalHandler }: loginProps) => {
+const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -46,10 +47,10 @@ const Login = ({ loginModalHandler }: loginProps) => {
             </div>
             <div className="password-container">
                 <label htmlFor="pass">Password</label>
-                <input type="text" name="password" id="pass" placeholder="Enter Password" value={password} onChange={inputHandler} required />
+                <input type="password" name="password" id="pass" placeholder="Enter Password" value={password} onChange={inputHandler} required />
             </div>
             <div className="new-acc">
-                <a>Don't have an account?  Sing Up</a>
+                <a onClick={signupModalHandler}>Don't have an account?  Sing Up</a>
             </div>
             <button disabled={loading}>Submit</button>
         </StyledLoginContent>

@@ -327,12 +327,13 @@ const StyledSpinner = styled.div`
   border-top: 5px solid rgb(12, 123, 238);
   border-bottom: 5px solid rgb(12, 123, 238);
   border-radius: 50%;
-  width: 10px;
   padding: 1rem;
   animation: spin infinite linear 1s;
-  position: absolute;
-  top: calc(50% - 2rem);
-  left: 50%;
+  position: fixed;
+  top: 45%;
+  left: 47%;
+  transform: translate(-50%, -50%);
+  
   @keyframes spin {
     from {
       transform: rotate(0deg);

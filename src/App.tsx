@@ -7,6 +7,7 @@ import styled from "styled-components";
 import CoinChart from "./components/CoinChart";
 import Error from "./components/Error";
 import Login from "./components/Login";
+import MobileMenu from "./components/MobileMenu";
 import Modal from "./components/Modal";
 import Nav from './components/Nav';
 import NavTableWrapper from "./components/NavTableWrapper";
@@ -26,17 +27,19 @@ const App = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userFavs, setUserFavs] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
   }, [page])
 
-  const loginModalHandler = (event: any) => {
-    // event?.preventDefault();
+  const loginModalHandler = () => {
+    if (openSignUpModal) setOpenSignUpModal(false);
     setOpenLoginModal(!openLoginModal);
   }
 
-  const signupModalHandler = (event: any) => {
+  const signupModalHandler = () => {
+    if (openLoginModal) setOpenLoginModal(false);
     setOpenSignUpModal(!openSignUpModal);
   }
 
@@ -47,6 +50,10 @@ const App = () => {
   const handleLogout = () => {
     signOut(auth);
     handleFavs([]);
+  }
+
+  const handleMobileMenu = () => {
+    setOpenMobileMenu(!openMobileMenu);
   }
 
   useEffect(() => {
@@ -97,7 +104,8 @@ const App = () => {
     loginModalHandler: loginModalHandler,
     signupModalHandler: signupModalHandler,
     user: user,
-    handleLogout: handleLogout
+    handleLogout: handleLogout,
+    handleMobileMenu: handleMobileMenu,
   }
 
   const pagePropsObj = {
@@ -114,6 +122,21 @@ const App = () => {
     user: user,
   }
 
+  const loginPropsObj = {
+    loginModalHandler: loginModalHandler,
+    signupModalHandler: signupModalHandler,
+  }
+
+  const signupPropsObj = {
+    loginModalHandler: loginModalHandler,
+    signupModalHandler: signupModalHandler,
+  }
+
+  const mobileMenuPropsObj = {
+    openMobileMenu: openMobileMenu,
+    handleMobileMenu: handleMobileMenu,
+  }
+
   if (loading) {
     return <StyledSpinner className="spinner" />
   }
@@ -122,25 +145,25 @@ const App = () => {
     <StyledApp className="App">
       <Routes>
         <Route path="/" element={
-          coinsList.length === 0 ? <StyledSpinner className="spinner" /> :
-            <>
-              <NavTableWrapper>
-                <Nav {...navPropsObj} />
-                <Table {...tablePropsObj} />
-              </NavTableWrapper>
-              <PaginationBar {...pagePropsObj} />
-            </>}>
+          <>
+            <NavTableWrapper>
+              <Nav {...navPropsObj} />
+              <Table {...tablePropsObj} />
+            </NavTableWrapper>
+            <PaginationBar {...pagePropsObj} />
+          </>}>
         </Route>
         <Route path="coins" element={<Navigate to="/" replace />} />
         <Route path="coins/:coinID" element={<CoinChart {...coinChartPropsObj} />} />
         <Route path="*" element={<Error />} />
       </Routes>
       <Modal openModal={openLoginModal} closeModal={loginModalHandler}>
-        <Login loginModalHandler={loginModalHandler} />
+        <Login {...loginPropsObj} />
       </Modal>
       <Modal openModal={openSignUpModal} closeModal={signupModalHandler} >
-        <SignUp signupModalHandler={signupModalHandler} />
+        <SignUp {...signupPropsObj} />
       </Modal>
+      <MobileMenu {...mobileMenuPropsObj} />
     </StyledApp>
   );
 }
@@ -159,21 +182,19 @@ const StyledSpinner = styled.div`
     border-top: 5px solid rgb(12, 123, 238);
     border-bottom: 5px solid rgb(12, 123, 238);
     border-radius: 50%;
-    width:10px;
     padding: 1rem;
     animation: spin infinite linear 1s;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(50% - 2rem);
-    margin: 0 auto;
+    position: fixed;
+    top: 45%;
+    left: 47%;
+    transform: translate(-50%, -50%);
 
     @keyframes spin {
       from{
-          transform: rotate(0deg);   
+          transform: rotateZ(0deg);   
       }
       to {
-          transform: rotate(360deg);
+          transform: rotateZ(360deg);
       }
     }
 `
