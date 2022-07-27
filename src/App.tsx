@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 import CoinChart from "./components/CoinChart";
+import Error from "./components/Error";
 import Login from "./components/Login";
 import Modal from "./components/Modal";
 import Nav from './components/Nav';
@@ -53,6 +54,7 @@ const App = () => {
       console.log(userData);
       setUser(userData);
       setLoading(false);
+      getUserFavs();
     })
 
 
@@ -65,8 +67,8 @@ const App = () => {
     getCoinsData();
 
     const getUserFavs = async () => {
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
+      if (auth.currentUser) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
         const docData = docSnap.data();
         if (docData) {
@@ -131,7 +133,7 @@ const App = () => {
         </Route>
         <Route path="coins" element={<Navigate to="/" replace />} />
         <Route path="coins/:coinID" element={<CoinChart {...coinChartPropsObj} />} />
-        <Route path="*" element={<div>Hello</div>} />
+        <Route path="*" element={<Error />} />
       </Routes>
       <Modal openModal={openLoginModal} closeModal={loginModalHandler}>
         <Login loginModalHandler={loginModalHandler} />

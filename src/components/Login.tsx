@@ -108,7 +108,7 @@ const StyledLoginContent = styled.form`
     button {
         width: 100%;
         color: rgb(255, 255, 255);
-        background-color: rgb(41, 105, 158);
+        background-color: rgb(41, 98, 255);
         border: none;
         padding: 1rem;
         border-radius: 10px;
@@ -120,6 +120,7 @@ const StyledLoginContent = styled.form`
             cursor: pointer;
         }
         :disabled {
+            color: rgb(255, 255, 255, 0.5);
             background-color: rgb(41, 105, 158, 0.5);
         }
 
