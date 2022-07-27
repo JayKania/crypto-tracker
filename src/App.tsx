@@ -2,7 +2,7 @@ import axios from "axios";
 import { signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 import CoinChart from "./components/CoinChart";
 import Login from "./components/Login";
@@ -127,21 +127,11 @@ const App = () => {
                 <Table {...tablePropsObj} />
               </NavTableWrapper>
               <PaginationBar {...pagePropsObj} />
-            </>}
-        >
+            </>}>
         </Route>
-        <Route path="coins" element={<CoinChart {...coinChartPropsObj} />}>
-          {/* <Route
-              index
-              element={
-                <main style={{ padding: "1rem" }}>
-                  <p>Select a Coin</p>
-                </main>
-              }
-            /> */}
-          <Route path=":coinID" element={<CoinChart {...coinChartPropsObj} />} />
-          <Route path="*" element={<div>Hello</div>} />
-        </Route>
+        <Route path="coins" element={<Navigate to="/" replace />} />
+        <Route path="coins/:coinID" element={<CoinChart {...coinChartPropsObj} />} />
+        <Route path="*" element={<div>Hello</div>} />
       </Routes>
       <Modal openModal={openLoginModal} closeModal={loginModalHandler}>
         <Login loginModalHandler={loginModalHandler} />
