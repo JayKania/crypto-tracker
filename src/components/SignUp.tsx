@@ -52,6 +52,7 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
 
     return (
         <StyledSignUpContent onSubmit={submitHandler} >
+            <div className="close-logo" onClick={signupModalHandler} >X</div>
             <h2>Sign Up</h2>
             <div className="username-container">
                 <label htmlFor="user">Username</label>
@@ -81,6 +82,10 @@ const StyledSignUpContent = styled.form`
     border-radius: 10px;
     box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
     animation: top-center 300ms ease 1;
+
+    .close-logo {
+        display: none;    
+    }
 
     h2 {
         color: white;
@@ -159,6 +164,21 @@ const StyledSignUpContent = styled.form`
             opacity: 1;
         }
     }
+
+    @media only screen and (max-width: 540px) {
+        .close-logo {
+            display: block;
+            position: absolute;
+            right: 5%;
+            font-weight: 600;
+            font-size: 20px;
+            color: white;
+            :hover {
+                cursor: pointer;
+            }
+        }
+    }
+
 `;
 
 export default SignUp

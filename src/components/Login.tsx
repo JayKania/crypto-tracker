@@ -40,6 +40,7 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
 
     return (
         <StyledLoginContent onSubmit={submitHandler} >
+            <div className="close-logo" onClick={loginModalHandler} >X</div>
             <h2>Login</h2>
             <div className="email-container">
                 <label htmlFor="email">Email</label>
@@ -53,19 +54,23 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
                 <a onClick={signupModalHandler}>Don't have an account?  Sing Up</a>
             </div>
             <button disabled={loading}>Submit</button>
-        </StyledLoginContent>
+        </StyledLoginContent >
     )
 }
 
 
 const StyledLoginContent = styled.form`
-    width: 450px;
     background-color: rgb(25, 32, 84);
     margin: 0 auto;
     padding: 1rem 2rem;
     border-radius: 10px;
     box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
     animation: top-center 300ms ease 1;
+    position: relative;
+
+    .close-logo {
+        display: none;
+    }
 
     h2 {
         color: white;
@@ -139,6 +144,20 @@ const StyledLoginContent = styled.form`
         to {
             transform: translateY(0);
             opacity: 1;
+        }
+    }
+
+    @media only screen and (max-width: 540px) {
+        .close-logo {
+            display: block;
+            position: absolute;
+            right: 5%;
+            font-weight: 600;
+            font-size: 20px;
+            color: white;
+            :hover {
+                cursor: pointer;
+            }
         }
     }
 

@@ -135,6 +135,10 @@ const App = () => {
   const mobileMenuPropsObj = {
     openMobileMenu: openMobileMenu,
     handleMobileMenu: handleMobileMenu,
+    loginModalHandler: loginModalHandler,
+    signupModalHandler: signupModalHandler,
+    user: user,
+    handleLogout: handleLogout,
   }
 
   if (loading) {

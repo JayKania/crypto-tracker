@@ -43,11 +43,12 @@ const StyledModalcontent = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
+    max-width: 450px;
+    width: 100%;
     @media only screen and (max-width: 540px) {
         width: 100%;
+        margin: 0 auto;
     }
-
 `
 
 export default Modal
