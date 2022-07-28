@@ -1,4 +1,5 @@
 import { User } from "firebase/auth"
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 
 interface mobileMenuProps {
@@ -15,7 +16,18 @@ const MobileMenu = ({ openMobileMenu, handleMobileMenu, loginModalHandler, signu
         <>
             <StyledMobileMenuOverlay className={`${!openMobileMenu ? "hidden" : ""}`} onClick={handleMobileMenu} />
             <StyledMobileMenuContent className={`${!openMobileMenu ? "hidden" : ""}`}>
-                {user ? <StyledLink className="logout-link" onClick={() => { handleMobileMenu(); handleLogout(); }}>LOG OUT</StyledLink> :
+
+                <h3>
+                    <StyledLink className="icon" href="/">
+                        <i className="fa fa-brands fa-bitcoin fa-lg"></i>
+                    </StyledLink>Coin Tracker
+                </h3>
+                {user ?
+                    <StyledListLogoutContainer>
+                        <Link to="/watchlist" onClick={handleMobileMenu} className="watchlist-link">WATCHLIST</Link>
+                        <StyledLink className="logout-link" onClick={() => { handleMobileMenu(); handleLogout(); }}>LOG OUT</StyledLink>
+                    </StyledListLogoutContainer>
+                    :
                     <>
                         <StyledLink className="login-link" onClick={() => { handleMobileMenu(); loginModalHandler(); }}>LOG IN</StyledLink>
                         <StyledLink className="signup-link" onClick={() => { handleMobileMenu(); signupModalHandler(); }} >SIGN UP</StyledLink>
@@ -50,6 +62,13 @@ const StyledMobileMenuContent = styled.div`
     display: flex;
     flex-direction: column;
     padding: 2rem 1rem;
+    h3 {
+        padding: 5px 10px 7px 10px;
+        margin-bottom: 2rem;
+        display: inline;
+        font-size: 1.2rem;
+        color: rgb(255,255,255, 0.7);
+    }
     &.hidden {
         transform: translateX(-100%);
     }
@@ -65,6 +84,24 @@ const StyledLink = styled.a`
         cursor: pointer;
     }
 
+    &.icon {
+        padding-left: 0;
+        font-size: 1rem;
+        color: rgb(255,255,255, 0.7);
+    }
+
 `;
+
+const StyledListLogoutContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    .watchlist-link {
+        text-decoration: none;
+        color: white;
+        padding: 5px 10px 7px 10px;
+        border-radius: 5px;
+        transition: color 250ms ease, border-color 250ms ease;
+    }
+`
 
 export default MobileMenu

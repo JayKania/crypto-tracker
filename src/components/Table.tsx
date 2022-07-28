@@ -127,7 +127,10 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
         return <StyledCurrencyData className="row row-currency-data" key={id}>
             <div className="coin-rank-fav-container">
                 <span>{market_cap_rank}</span>
-                <i className={`fa fa-thin fa-star ${userFavs.includes(id.toString()) ? "fav-coin" : ""}`} onClick={() => favouriteHandler(id.toString())}></i>
+                <i
+                    className={`fa fa-thin fa-star ${userFavs.includes(id.toString()) ? "fav-coin" : ""}`}
+                    onClick={() => favouriteHandler(id.toString())}
+                />
             </div>
             <div className="coin-name-container" id={`${id}-container`} onClick={() => { routeHandler(id.toString()) }}>
                 <div className="coin-image">
@@ -264,9 +267,30 @@ const StyledCurrencyData = styled.div`
             -webkit-text-fill-color: transparent;
             -webkit-text-stroke-width: 1px;
             -webkit-text-stroke-color: rgb(255,255,255, 0.5);
+            :hover {
+                cursor: pointer;
+                ::after {
+                    content: "Add To Watchlist";
+                    position: absolute;
+                    -webkit-text-stroke-width: 0;
+                    -webkit-text-fill-color: white;
+                    font-family: "Noto Sans", sans-serif;
+                    display: block;
+                    font-size: 10px;
+                    background-color: rgb(0,0,0,0.7);
+                    padding: 1rem;
+                    margin-top: 5px;
+                    border-radius: 10px;
+                }
+            }
             &.fav-coin {
                 -webkit-text-stroke-width: 0;
                 -webkit-text-fill-color: yellow;
+                :hover {
+                    ::after {
+                        content: "Remove from Watchlist";
+                    }
+                }
             }
         }
         @media only screen and (max-width: 540px) {

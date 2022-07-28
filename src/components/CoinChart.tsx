@@ -402,9 +402,30 @@ const StyledFavDaysContainer = styled.div`
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: rgb(255,255,255, 0.5);
-    &.fav-coin {
+    :hover {
+      cursor: pointer;
+        ::after {
+          content: "Add To Watchlist";
+          position: absolute;
+          -webkit-text-stroke-width: 0;
+          -webkit-text-fill-color: white;
+          font-family: "Noto Sans", sans-serif;
+          display: block;
+          font-size: 10px;
+          background-color: rgb(0,0,0,0.7);
+          padding: 1rem;
+          margin-top: 5px;
+          border-radius: 10px;
+        }
+      }
+      &.fav-coin {
       -webkit-text-stroke-width: 0;
       -webkit-text-fill-color: yellow;
+      :hover {
+        ::after {
+          content: "Remove from Watchlist";
+        }
+      }
     }
   }
   @media only screen and (max-width: 540px) {

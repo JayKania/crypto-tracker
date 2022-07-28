@@ -12,8 +12,10 @@ import Modal from "./components/Modal";
 import Nav from './components/Nav';
 import NavTableWrapper from "./components/NavTableWrapper";
 import PaginationBar from "./components/PaginationBar";
+import RequireAuth from "./components/RequireAuth";
 import SignUp from "./components/SignUp";
 import Table from "./components/Table";
+import Watchlist from "./components/Watchlist";
 import { auth, db } from "./firebaseConfig";
 
 const App = () => {
@@ -132,6 +134,10 @@ const App = () => {
     signupModalHandler: signupModalHandler,
   }
 
+  const watchlistPropsObj = {
+    userFavs: userFavs
+  }
+
   const mobileMenuPropsObj = {
     openMobileMenu: openMobileMenu,
     handleMobileMenu: handleMobileMenu,
@@ -159,6 +165,10 @@ const App = () => {
         </Route>
         <Route path="coins" element={<Navigate to="/" replace />} />
         <Route path="coins/:coinID" element={<CoinChart {...coinChartPropsObj} />} />
+        <Route path="watchlist" element={
+          <RequireAuth user={user}>
+            <Watchlist {...watchlistPropsObj} />
+          </RequireAuth>} />
         <Route path="*" element={<Error />} />
       </Routes>
       <Modal openModal={openLoginModal} closeModal={loginModalHandler}>
