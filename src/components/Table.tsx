@@ -4,6 +4,7 @@ import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { db } from "../firebaseConfig";
+import { convertToInternationalCurrencySystem, numberWithCommas } from "../Utils";
 
 
 interface tableProps {
@@ -33,31 +34,6 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
     console.group("table logs")
 
     let navigate = useNavigate();
-
-    // formatter to get string with commas
-    const numberWithCommas = (amount: string) => {
-        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-
-    // formatter to get B/M/K at the value
-    const convertToInternationalCurrencySystem = (labelValue: number): string | number => {
-
-        // Nine Zeroes for Billions
-        return Math.abs(Number(labelValue)) >= 1.0e+9
-
-            ? (Math.abs(Number(labelValue)) / 1.0e+9).toFixed(2) + "B"
-            // Six Zeroes for Millions 
-            : Math.abs(Number(labelValue)) >= 1.0e+6
-
-                ? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
-                // Three Zeroes for Thousands
-                : Math.abs(Number(labelValue)) >= 1.0e+3
-
-                    ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
-
-                    : Math.abs(Number(labelValue));
-
-    }
 
     const routeHandler = (id: string) => {
         navigate("/coins/" + id);
