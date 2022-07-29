@@ -27,7 +27,7 @@ const App = () => {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [userFavs, setUserFavs] = useState<string[]>([]);
+  const [userFavs, setUserFavs] = useState<{} | null>(null);
   const [loading, setLoading] = useState(true);
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
 
@@ -45,13 +45,14 @@ const App = () => {
     setOpenSignUpModal(!openSignUpModal);
   }
 
-  const handleFavs = (favs: string[]) => {
-    setUserFavs([...favs]);
+  const handleFavs = (favs: {} | null) => {
+    // console.log(userFavs);
+    setUserFavs(favs);
   }
 
   const handleLogout = () => {
     signOut(auth);
-    handleFavs([]);
+    handleFavs(null);
   }
 
   const handleMobileMenu = () => {
@@ -60,7 +61,7 @@ const App = () => {
 
   useEffect(() => {
     auth.onAuthStateChanged(userData => {
-      console.log(userData);
+      // console.log(userData);
       setUser(userData);
       setLoading(false);
       getUserFavs();
@@ -81,7 +82,7 @@ const App = () => {
         const docSnap = await getDoc(docRef);
         const docData = docSnap.data();
         if (docData) {
-          handleFavs([...docData.favourites]);
+          handleFavs({ ...docData.favourites });
         }
       }
     }
@@ -135,7 +136,9 @@ const App = () => {
   }
 
   const watchlistPropsObj = {
-    userFavs: userFavs
+    userFavs: userFavs,
+    user: user,
+    handleFavs: handleFavs,
   }
 
   const mobileMenuPropsObj = {
@@ -155,13 +158,14 @@ const App = () => {
     <StyledApp className="App">
       <Routes>
         <Route path="/" element={
-          <>
-            <NavTableWrapper>
-              <Nav {...navPropsObj} />
-              <Table {...tablePropsObj} />
-            </NavTableWrapper>
-            <PaginationBar {...pagePropsObj} />
-          </>}>
+          coinsList.length === 0 ? <StyledSpinner className="spinner" /> :
+            <>
+              <NavTableWrapper>
+                <Nav {...navPropsObj} />
+                <Table {...tablePropsObj} />
+              </NavTableWrapper>
+              <PaginationBar {...pagePropsObj} />
+            </>}>
         </Route>
         <Route path="coins" element={<Navigate to="/" replace />} />
         <Route path="coins/:coinID" element={<CoinChart {...coinChartPropsObj} />} />

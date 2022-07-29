@@ -32,6 +32,7 @@ const MobileMenu = ({ openMobileMenu, handleMobileMenu, loginModalHandler, signu
                         <StyledLink className="login-link" onClick={() => { handleMobileMenu(); loginModalHandler(); }}>LOG IN</StyledLink>
                         <StyledLink className="signup-link" onClick={() => { handleMobileMenu(); signupModalHandler(); }} >SIGN UP</StyledLink>
                     </>}
+                <footer><span>&#169; {new Date().getFullYear()}, Jay Kania</span></footer>
             </StyledMobileMenuContent>
         </>
     )
@@ -72,6 +73,18 @@ const StyledMobileMenuContent = styled.div`
     &.hidden {
         transform: translateX(-100%);
     }
+    footer {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        margin: 1rem 0 0 0;
+        padding: 10px 0;
+        border-top: 1px solid rgb(255,255,255, 0.5);;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 `
 
 const StyledLink = styled.a`
@@ -103,5 +116,6 @@ const StyledListLogoutContainer = styled.div`
         transition: color 250ms ease, border-color 250ms ease;
     }
 `
+
 
 export default MobileMenu

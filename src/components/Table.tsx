@@ -1,3 +1,4 @@
+import axios from "axios";
 import { User } from "firebase/auth";
 import { doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { memo } from "react";
@@ -12,7 +13,7 @@ interface tableProps {
     searchedCoins: coin[],
     page: number,
     user: User | undefined | null,
-    userFavs: string[],
+    userFavs: any,
     handleFavs: any,
 }
 
@@ -31,13 +32,14 @@ interface coin {
 
 const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: tableProps) => {
 
-    console.group("table logs")
+    // console.group("table logs")
 
     let navigate = useNavigate();
 
     const routeHandler = (id: string) => {
         navigate("/coins/" + id);
     }
+
 
     const favouriteHandler = async (id: string) => {
         if (!user) {
@@ -50,23 +52,59 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
         const docSnap = await getDoc(docRef);
         const docData: DocumentData | undefined = docSnap.data();
         if (docData) {
-            if (docData.favourites.includes(id)) {
-                const tempFavourites = docData?.favourites.filter((coin: any) => {
-                    return coin !== id;
-                });
+            console.log(docData.favourites[id]);
+            if (docData.favourites[id]) {
+                const tempFavourites = { ...docData.favourites };
+                console.log(tempFavourites);
+                delete tempFavourites[id];
                 await setDoc(docRef, {
-                    favourites: [...tempFavourites]
-                }, {
-                    merge: true,
+                    ...docData, favourites: { ...tempFavourites }
                 })
                 handleFavs(tempFavourites)
-            } else {
+                console.log(tempFavourites);
+
+            }
+            else {
+                const { data: coinData } = await axios.get(
+                    `https://api.coingecko.com/api/v3/coins/${id}`
+                );
+                console.log(coinData);
+                const {
+                    market_cap_rank,
+                    name,
+                    description,
+                    image,
+                    symbol,
+                    market_data,
+                    links,
+                } = coinData;
+
+                const tempFavourites = { ...docData.favourites, };
+
+                tempFavourites[id] = {
+
+                    market_cap_rank: market_cap_rank,
+                    market_cap: market_data.market_cap.usd,
+                    name: name,
+                    description: description.en,
+                    image: image,
+                    symbol: symbol,
+                    price_change_percentage_24h: market_data.price_change_percentage_24h,
+                    current_price: market_data.current_price.usd,
+                    total_volume: market_data.total_volume.usd,
+                    circulating_supply: market_data.circulating_supply,
+                    link: links.homepage[0],
+
+                }
+
                 await setDoc(docRef, {
-                    favourites: [...docData?.favourites, id],
+                    favourites: { ...tempFavourites },
                 }, {
                     merge: true,
                 });
-                handleFavs([...docData?.favourites, id])
+
+                console.log(tempFavourites);
+                handleFavs(tempFavourites)
             }
         }
     }
@@ -78,9 +116,9 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
     } else {
         listOfCoins = [...coinsList]
     }
-    console.dir(searchedCoins);
-    console.dir(coinsList);
-    console.dir(listOfCoins);
+    // console.dir(searchedCoins);
+    // console.dir(coinsList);
+    // console.dir(listOfCoins);
 
 
     const listMarkup = listOfCoins.map(({ id, market_cap_rank, image, name, symbol, current_price, price_change_percentage_24h, market_cap, total_volume, circulating_supply }) => {
@@ -104,7 +142,7 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
             <div className="coin-rank-fav-container">
                 <span>{market_cap_rank}</span>
                 <i
-                    className={`fa fa-thin fa-star ${userFavs.includes(id.toString()) ? "fav-coin" : ""}`}
+                    className={`fa fa-thin fa-star ${userFavs ? (userFavs[id] ? "fav-coin" : "") : ""}`}
                     onClick={() => favouriteHandler(id.toString())}
                 />
             </div>

@@ -26,7 +26,7 @@ ChartJS.register(
 );
 
 interface coinChartProps {
-  userFavs: string[],
+  userFavs: any,
   handleFavs: any;
   user: User | undefined | null,
 }
@@ -188,7 +188,7 @@ const CoinChart = ({ userFavs, handleFavs, user }: coinChartProps) => {
     return <StyledSpinner className="spinner" />;
   }
 
-  const favouriteHandler = async (id: string | undefined) => {
+  const favouriteHandler = async (id: string) => {
     if (!user) {
       alert("Please Login first!");
       return;
@@ -199,23 +199,59 @@ const CoinChart = ({ userFavs, handleFavs, user }: coinChartProps) => {
     const docSnap = await getDoc(docRef);
     const docData: DocumentData | undefined = docSnap.data();
     if (docData) {
-      if (docData.favourites.includes(id)) {
-        const tempFavourites = docData?.favourites.filter((coin: any) => {
-          return coin !== id;
-        });
+      console.log(docData.favourites[id]);
+      if (docData.favourites[id]) {
+        const tempFavourites = { ...docData.favourites };
+        console.log(tempFavourites);
+        delete tempFavourites[id];
         await setDoc(docRef, {
-          favourites: [...tempFavourites]
-        }, {
-          merge: true,
+          ...docData, favourites: { ...tempFavourites }
         })
         handleFavs(tempFavourites)
-      } else {
+        console.log(tempFavourites);
+
+      }
+      else {
+        const { data: coinData } = await axios.get(
+          `https://api.coingecko.com/api/v3/coins/${id}`
+        );
+        console.log(coinData);
+        const {
+          market_cap_rank,
+          name,
+          description,
+          image,
+          symbol,
+          market_data,
+          links,
+        } = coinData;
+
+        const tempFavourites = { ...docData.favourites, };
+
+        tempFavourites[id] = {
+
+          market_cap_rank: market_cap_rank,
+          market_cap: market_data.market_cap.usd,
+          name: name,
+          description: description.en,
+          image: image,
+          symbol: symbol,
+          price_change_percentage_24h: market_data.price_change_percentage_24h,
+          current_price: market_data.current_price.usd,
+          total_volume: market_data.total_volume.usd,
+          circulating_supply: market_data.circulating_supply,
+          link: links.homepage[0],
+
+        }
+
         await setDoc(docRef, {
-          favourites: [...docData?.favourites, id],
+          favourites: { ...tempFavourites },
         }, {
           merge: true,
         });
-        handleFavs([...docData?.favourites, id])
+
+        console.log(tempFavourites);
+        handleFavs(tempFavourites)
       }
     }
   }
@@ -226,7 +262,7 @@ const CoinChart = ({ userFavs, handleFavs, user }: coinChartProps) => {
         <StyledHeader>
           <h4>Statistics</h4>
           <StyledFavDaysContainer className="fav-days-container">
-            <i className={`fa fa-thin fa-star fa-2x ${coinID ? userFavs.includes(coinID.toString()) ? "fav-coin" : "" : ""}`} onClick={() => favouriteHandler(coinID?.toString())}></i>
+            <i className={`fa fa-thin fa-star fa-2x ${coinID ? userFavs ? (userFavs[coinID] ? "fav-coin" : "") : "" : ""}`} onClick={() => coinID ? favouriteHandler(coinID.toString()) : null}></i>
             <StyldeDaysContainer>
               <div
                 className={`days ${days === 1 ? "active" : ""}`}
@@ -382,11 +418,14 @@ const StyledFavDaysContainer = styled.div`
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: rgb(255,255,255, 0.5);
+    position: relative;
     :hover {
       cursor: pointer;
         ::after {
           content: "Add To Watchlist";
           position: absolute;
+          right: 0%;
+          width: max-content;
           -webkit-text-stroke-width: 0;
           -webkit-text-fill-color: white;
           font-family: "Noto Sans", sans-serif;
