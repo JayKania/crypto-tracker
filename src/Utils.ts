@@ -20,3 +20,10 @@ export const convertToInternationalCurrencySystem = (
     ? (Math.abs(Number(labelValue)) / 1.0e3).toFixed(2) + "K"
     : Math.abs(Number(labelValue));
 };
+
+export const checkPassLength = (pass: string) => {
+  if (pass.length < 8) {
+    return false;
+  }
+  return true;
+};

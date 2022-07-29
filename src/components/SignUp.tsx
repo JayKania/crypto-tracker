@@ -3,6 +3,7 @@ import { useState } from "react";
 import styled from "styled-components"
 import { auth, db } from "../firebaseConfig";
 import { setDoc, doc } from "firebase/firestore"
+import { checkPassLength } from "../Utils";
 
 interface signupProps {
     signupModalHandler: any,
@@ -15,6 +16,8 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [emailErrMsg, setEmailErrMsg] = useState("");
+    const [passErrMsg, setPassErrMsg] = useState("");
 
 
     const inputHandler = (event: any) => {
@@ -23,29 +26,49 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
         } else if (event.target.id === "email") {
             setEmail(event.target.value);
         } else {
-            setPassword(event.target.value);
+            setPassword(event.target.value.trim());
         }
     }
 
     const submitHandler = async (event: any) => {
         event.preventDefault();
+        setEmailErrMsg("");
+        setPassErrMsg("");
         try {
-            setLoading(true);
-            const data = await createUserWithEmailAndPassword(auth, email, password)
-            console.log(data.user);
-            await updateProfile(data.user, {
-                displayName: username
-            })
+            if (checkPassLength(password)) {
+                setPassErrMsg("")
+                setLoading(true);
+                const data = await createUserWithEmailAndPassword(auth, email, password)
+                console.log(data.user);
+                await updateProfile(data.user, {
+                    displayName: username
+                })
 
-            const docRef = doc(db, "users", data.user.uid);
-            await setDoc(docRef, {
-                name: username,
-                favourites: [],
-            })
-            signupModalHandler();
-            setLoading(false);
+                const docRef = doc(db, "users", data.user.uid);
+                await setDoc(docRef, {
+                    name: username,
+                    favourites: [],
+                })
+                setEmailErrMsg("");
+                signupModalHandler();
+                setLoading(false);
+            } else {
+                // alert("Password must be atleast 8 characters long");
+                setPassErrMsg("Password must be atleast 8 characters long.")
+            }
         } catch (err: any) {
             console.log(err.code);
+            const errCode = err.code;
+            switch (errCode) {
+                case "auth/email-already-in-use":
+                    setEmailErrMsg("Account already in use.");
+                    break;
+                case "auth/invalid-email":
+                    setEmailErrMsg("Invalid Email Address.")
+                    break;
+                default:
+                    break;
+            }
             setLoading(false);
         }
     }
@@ -61,10 +84,12 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
             <div className="email-container">
                 <label htmlFor="email">Email</label>
                 <input type="email" name="email" id="email" placeholder="Enter Email" onChange={inputHandler} value={email} required />
+                <p className="err-msg">{emailErrMsg}</p>
             </div>
             <div className="password-container">
                 <label htmlFor="pass">Password</label>
                 <input type="password" name="password" id="pass" placeholder="Enter Password" onChange={inputHandler} value={password} required />
+                <p className="err-msg">{passErrMsg}</p>
             </div>
             <div className="existing-acc">
                 <a onClick={loginModalHandler}>Already have an account?</a>
@@ -82,6 +107,13 @@ const StyledSignUpContent = styled.form`
     border-radius: 10px;
     box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
     animation: top-center 300ms ease 1;
+
+    .err-msg {
+        border-radius: 10px;
+        color: rgba(255, 255, 0);
+        padding-top: 5px;
+        font-size: 0.8rem;
+    }
 
     .close-logo {
         display: none;    
@@ -165,7 +197,27 @@ const StyledSignUpContent = styled.form`
         }
     }
 
-    @media only screen and (max-width: 540px) {
+    @media only screen and (max-width: 320px) {
+        font-size: 14px;
+        h2 {
+            margin: 1rem;
+            /* font-size: 1.rem; */
+        }
+        .close-logo {
+            display: block;
+            position: absolute;
+            right: 5%;
+            font-weight: 600;
+            font-size: 20px;
+            color: white;
+            :hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+    @media only screen and (min-width: 321px) and (max-width: 540px){
+        
         .close-logo {
             display: block;
             position: absolute;

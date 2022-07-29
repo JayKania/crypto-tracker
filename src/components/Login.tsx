@@ -12,11 +12,14 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const [loading, setLoading] = useState(false);
+    const [emailErrMsg, setEmailErrMsg] = useState("");
+    const [passErrMsg, setPassErrMsg] = useState("");
 
     const submitHandler = async (event: any) => {
         event.preventDefault();
+        setEmailErrMsg("");
+        setPassErrMsg("");
         try {
             setLoading(true);
             const data = await signInWithEmailAndPassword(auth, email, password);
@@ -25,6 +28,17 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
             setLoading(false);
         } catch (err: any) {
             console.log(err.code);
+            const errCode = err.code;
+            switch (errCode) {
+                case "auth/user-not-found":
+                    setEmailErrMsg("No such account.");
+                    break;
+                case "auth/wrong-password":
+                    setPassErrMsg("Please check your password.");
+                    break;
+                default:
+                    break;
+            }
             setLoading(false);
         }
         // signOut(auth);
@@ -45,10 +59,12 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
             <div className="email-container">
                 <label htmlFor="email">Email</label>
                 <input type="email" name="email" id="email" placeholder="Enter Email" value={email} onChange={inputHandler} required />
+                <p className="err-msg">{emailErrMsg}</p>
             </div>
             <div className="password-container">
                 <label htmlFor="pass">Password</label>
                 <input type="password" name="password" id="pass" placeholder="Enter Password" value={password} onChange={inputHandler} required />
+                <p className="err-msg">{passErrMsg}</p>
             </div>
             <div className="new-acc">
                 <a onClick={signupModalHandler}>Don't have an account?  Sing Up</a>
@@ -67,6 +83,13 @@ const StyledLoginContent = styled.form`
     box-shadow: 1px 1px 5px 2px rgb(9, 14, 52);
     animation: top-center 300ms ease 1;
     position: relative;
+
+    .err-msg {
+        border-radius: 10px;
+        color: rgba(255, 255, 0);
+        padding-top: 5px;
+        font-size: 0.8rem;
+    }
 
     .close-logo {
         display: none;

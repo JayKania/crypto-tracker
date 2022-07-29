@@ -53,6 +53,9 @@ const StyledPaginationBarContainer = styled.div`
   justify-content: center;
   margin: 2rem 0;
   flex-wrap: wrap;
+  @media only screen and (max-width: 540px) {
+    display: none;
+  }
 `;
 
 const StyledPageNumbersContainer = styled.div`

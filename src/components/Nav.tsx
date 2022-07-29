@@ -111,8 +111,9 @@ const StyledNav = styled.nav`
         border-radius: 0;
         padding: 1rem 0.5rem;
         margin: 0;
-        background-color: transparent;
+        background-color: rgb(25, 32, 84);
         box-shadow: none;
+        position: fixed;
         h3 {
             span {
                 display: none;

@@ -164,8 +164,6 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
         </StyledCurrencyData>
     })
 
-    console.groupEnd();
-
     return (
         <StyledTable className="currency-container">
             <StyledHeader className="row row-header">
@@ -191,7 +189,7 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
                     Circulating Supply
                 </div>
             </StyledHeader>
-            {listMarkup.slice((page - 1) * 30, (page - 1) * 30 + 30)}
+            {window.screen.width <= 540 ? listMarkup : listMarkup.slice((page - 1) * 30, (page - 1) * 30 + 30)}
         </StyledTable>
     )
 }
@@ -224,7 +222,8 @@ const StyledTable = styled.div`
     @media only screen and (max-width: 540px) {
         width: 100%;
         border-radius: 0;
-        padding: 1rem 0rem;
+        padding: 0;
+        padding-top: 70px;
         box-shadow: none;
         border: none;
         background-color: transparent;

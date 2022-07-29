@@ -161,10 +161,6 @@ const Watchlist = ({ userFavs, user, handleFavs }: watchlistProps) => {
             listMarkup.push(markup);
 
         }
-        // console.log(market_cap_rank);
-
-
-
         return <StyledWatchlist>
             <h3>Watchlist</h3>
             <StyledTable className="currency-container">
@@ -261,7 +257,6 @@ const StyledWatchlist = styled.div`
     display: flex;
     flex-direction: column;
     margin:  0 auto;
-    /* padding: 1rem 3rem; */
     width: 95%;
     h3 {
         font-size: 1.5rem;
