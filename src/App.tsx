@@ -97,6 +97,7 @@ const App = () => {
     user: user,
     userFavs: userFavs,
     handleFavs: handleFavs,
+    loginModalHandler: loginModalHandler
   }
 
   const navPropsObj = {
@@ -123,6 +124,7 @@ const App = () => {
     userFavs: userFavs,
     handleFavs: handleFavs,
     user: user,
+    loginModalHandler: loginModalHandler
   }
 
   const loginPropsObj = {

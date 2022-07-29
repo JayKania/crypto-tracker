@@ -15,6 +15,7 @@ interface tableProps {
     user: User | undefined | null,
     userFavs: any,
     handleFavs: any,
+    loginModalHandler: any
 }
 
 interface coin {
@@ -30,7 +31,7 @@ interface coin {
     circulating_supply: number,
 }
 
-const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: tableProps) => {
+const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs, loginModalHandler }: tableProps) => {
 
     // console.group("table logs")
 
@@ -43,7 +44,7 @@ const Table = ({ coinsList, searchedCoins, page, user, userFavs, handleFavs }: t
 
     const favouriteHandler = async (id: string) => {
         if (!user) {
-            alert("Please Login first!");
+            loginModalHandler();
             return;
         }
 

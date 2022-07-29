@@ -29,9 +29,10 @@ interface coinChartProps {
   userFavs: any,
   handleFavs: any;
   user: User | undefined | null,
+  loginModalHandler: any
 }
 
-const CoinChart = ({ userFavs, handleFavs, user }: coinChartProps) => {
+const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartProps) => {
   const [coinPrices, setCoinPrices] = useState([]);
   const [days, setDays] = useState(1);
   const [coinData, setCoinData] = useState<any>([]);
@@ -190,7 +191,7 @@ const CoinChart = ({ userFavs, handleFavs, user }: coinChartProps) => {
 
   const favouriteHandler = async (id: string) => {
     if (!user) {
-      alert("Please Login first!");
+      loginModalHandler();
       return;
     }
 

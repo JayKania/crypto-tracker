@@ -79,11 +79,11 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
             <h2>Sign Up</h2>
             <div className="username-container">
                 <label htmlFor="user">Username</label>
-                <input type="text" name="username" id="user" placeholder="Enter Username" onChange={inputHandler} value={username} required />
+                <input type="text" name="username" id="user" placeholder="Enter Username" onChange={inputHandler} autoComplete="off" value={username} required />
             </div>
             <div className="email-container">
                 <label htmlFor="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="Enter Email" onChange={inputHandler} value={email} required />
+                <input type="email" name="email" id="email" placeholder="Enter Email" onChange={inputHandler} autoComplete="off" value={email} required />
                 <p className="err-msg">{emailErrMsg}</p>
             </div>
             <div className="password-container">

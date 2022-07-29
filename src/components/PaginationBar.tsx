@@ -32,6 +32,10 @@ const PaginationBar = ({ coinsList, searchedCoins, page, pageHandler }: pageProp
         listMarkup.push(<StyledPageNumber className={`page-number-${i} ${page === i ? "active" : ""}`} key={i} onClick={() => { pageHandler(i) }} >{i}</StyledPageNumber>);
     }
 
+    if (window.screen.width <= 540) {
+        return null;
+    }
+
     return (
         <StyledPaginationBarContainer className="pagination-container">
             <StyledPageNumbersContainer className="page-no-container">
@@ -53,9 +57,6 @@ const StyledPaginationBarContainer = styled.div`
   justify-content: center;
   margin: 2rem 0;
   flex-wrap: wrap;
-  @media only screen and (max-width: 540px) {
-    display: none;
-  }
 `;
 
 const StyledPageNumbersContainer = styled.div`

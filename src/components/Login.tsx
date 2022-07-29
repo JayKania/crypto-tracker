@@ -58,7 +58,7 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
             <h2>Login</h2>
             <div className="email-container">
                 <label htmlFor="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="Enter Email" value={email} onChange={inputHandler} required />
+                <input type="email" name="email" id="email" placeholder="Enter Email" value={email} onChange={inputHandler} autoComplete="off" required />
                 <p className="err-msg">{emailErrMsg}</p>
             </div>
             <div className="password-container">
