@@ -22,9 +22,9 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
 
     const inputHandler = (event: any) => {
         if (event.target.id === "user") {
-            setUsername(event.target.value);
+            setUsername(event.target.value.trim());
         } else if (event.target.id === "email") {
-            setEmail(event.target.value);
+            setEmail(event.target.value.trim());
         } else {
             setPassword(event.target.value.trim());
         }
@@ -39,13 +39,13 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
                 setPassErrMsg("")
                 setLoading(true);
                 const data = await createUserWithEmailAndPassword(auth, email, password)
-                console.log(data.user);
                 await updateProfile(data.user, {
                     displayName: username
                 })
 
                 const docRef = doc(db, "users", data.user.uid);
                 await setDoc(docRef, {
+                    email: email,
                     name: username,
                     favourites: [],
                 })
@@ -57,7 +57,6 @@ const SignUp = ({ signupModalHandler, loginModalHandler }: signupProps) => {
                 setPassErrMsg("Password must be atleast 8 characters long.")
             }
         } catch (err: any) {
-            console.log(err.code);
             const errCode = err.code;
             switch (errCode) {
                 case "auth/email-already-in-use":

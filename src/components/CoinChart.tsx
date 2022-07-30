@@ -29,10 +29,11 @@ interface coinChartProps {
   userFavs: any,
   handleFavs: any;
   user: User | undefined | null,
-  loginModalHandler: any
+  loginModalHandler: any,
+  handleDatabaseFavs: any,
 }
 
-const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartProps) => {
+const CoinChart = ({ userFavs, user, loginModalHandler, handleDatabaseFavs }: coinChartProps) => {
   const [coinPrices, setCoinPrices] = useState([]);
   const [days, setDays] = useState(1);
   const [coinData, setCoinData] = useState<any>([]);
@@ -44,7 +45,6 @@ const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartP
   };
 
   useEffect(() => {
-    console.group("coin chart logs");
 
     const getCoinData = async () => {
       const { data: pricesData } = await axios.get(
@@ -53,7 +53,6 @@ const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartP
       const { data: coinData } = await axios.get(
         `https://api.coingecko.com/api/v3/coins/${coinID}`
       );
-      console.dir(coinData);
       const {
         market_cap_rank,
         name,
@@ -63,7 +62,6 @@ const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartP
         market_data,
         links,
       } = coinData;
-      // console.dir(data.prices);
       setCoinData({
         market_cap_rank: market_cap_rank,
         market_cap: market_data.market_cap.usd,
@@ -130,7 +128,6 @@ const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartP
     let temp_current_price: string[] = Number(coinData.current_price)
       .toString()
       .split(".");
-    // console.log(new_current_price);
     let new_current_price =
       numberWithCommas(temp_current_price[0]) +
       "." +
@@ -183,11 +180,7 @@ const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartP
   };
 
   const coinMarkup = createCoinMarkup();
-  console.groupEnd();
 
-  if (coinData.length === 0) {
-    return <StyledSpinner className="spinner" />;
-  }
 
   const favouriteHandler = async (id: string) => {
     if (!user) {
@@ -195,66 +188,33 @@ const CoinChart = ({ userFavs, handleFavs, user, loginModalHandler }: coinChartP
       return;
     }
 
-    console.log(id);
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
     const docData: DocumentData | undefined = docSnap.data();
     if (docData) {
-      console.log(docData.favourites[id]);
-      if (docData.favourites[id]) {
-        const tempFavourites = { ...docData.favourites };
-        console.log(tempFavourites);
-        delete tempFavourites[id];
+      if (docData.favourites.includes(id)) {
+        const tempFavourites = docData?.favourites.filter((coin: any) => {
+          return coin !== id;
+        });
         await setDoc(docRef, {
-          ...docData, favourites: { ...tempFavourites }
+          favourites: [...tempFavourites]
+        }, {
+          merge: true,
         })
-        handleFavs(tempFavourites)
-        console.log(tempFavourites);
-
-      }
-      else {
-        const { data: coinData } = await axios.get(
-          `https://api.coingecko.com/api/v3/coins/${id}`
-        );
-        console.log(coinData);
-        const {
-          market_cap_rank,
-          name,
-          description,
-          image,
-          symbol,
-          market_data,
-          links,
-        } = coinData;
-
-        const tempFavourites = { ...docData.favourites, };
-
-        tempFavourites[id] = {
-
-          market_cap_rank: market_cap_rank,
-          market_cap: market_data.market_cap.usd,
-          name: name,
-          description: description.en,
-          image: image,
-          symbol: symbol,
-          price_change_percentage_24h: market_data.price_change_percentage_24h,
-          current_price: market_data.current_price.usd,
-          total_volume: market_data.total_volume.usd,
-          circulating_supply: market_data.circulating_supply,
-          link: links.homepage[0],
-
-        }
-
+        handleDatabaseFavs({ ...tempFavourites })
+      } else {
         await setDoc(docRef, {
-          favourites: { ...tempFavourites },
+          favourites: [...docData?.favourites, id],
         }, {
           merge: true,
         });
-
-        console.log(tempFavourites);
-        handleFavs(tempFavourites)
+        handleDatabaseFavs({ ...docData?.favourites })
       }
     }
+  }
+
+  if (coinData.length === 0) {
+    return <StyledSpinner className="spinner" />;
   }
 
   return (

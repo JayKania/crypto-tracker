@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { User } from 'firebase/auth'
 import { doc, DocumentData, getDoc, setDoc } from 'firebase/firestore'
 import { memo } from 'react'
@@ -11,13 +10,13 @@ import { convertToInternationalCurrencySystem, numberWithCommas } from '../Utils
 interface watchlistProps {
     userFavs: any,
     user: User | undefined | null,
-    handleFavs: any
+    handleFavs: any,
+    handleDatabaseFavs: any
 }
 
-const Watchlist = ({ userFavs, user, handleFavs }: watchlistProps) => {
+const Watchlist = ({ userFavs, user, handleDatabaseFavs }: watchlistProps) => {
 
     let navigate = useNavigate();
-    console.log(userFavs);
 
     const routeHandler = (id: string) => {
         navigate("/coins/" + id);
@@ -29,64 +28,27 @@ const Watchlist = ({ userFavs, user, handleFavs }: watchlistProps) => {
             return;
         }
 
-        console.log(id);
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         const docData: DocumentData | undefined = docSnap.data();
         if (docData) {
-            console.log(docData.favourites[id]);
-            if (docData.favourites[id]) {
-                const tempFavourites = { ...docData.favourites };
-                console.log(tempFavourites);
-                delete tempFavourites[id];
+            if (docData.favourites.includes(id)) {
+                const tempFavourites = docData?.favourites.filter((coin: any) => {
+                    return coin !== id;
+                });
                 await setDoc(docRef, {
-                    ...docData, favourites: { ...tempFavourites }
+                    favourites: [...tempFavourites]
+                }, {
+                    merge: true,
                 })
-                handleFavs(tempFavourites)
-                console.log(tempFavourites);
-
-            }
-            else {
-                const { data: coinData } = await axios.get(
-                    `https://api.coingecko.com/api/v3/coins/${id}`
-                );
-                console.log(coinData);
-                const {
-                    market_cap_rank,
-                    name,
-                    description,
-                    image,
-                    symbol,
-                    market_data,
-                    links,
-                } = coinData;
-
-                const tempFavourites = { ...docData.favourites, };
-
-                tempFavourites[id] = {
-
-                    market_cap_rank: market_cap_rank,
-                    market_cap: market_data.market_cap.usd,
-                    name: name,
-                    description: description.en,
-                    image: image,
-                    symbol: symbol,
-                    price_change_percentage_24h: market_data.price_change_percentage_24h,
-                    current_price: market_data.current_price.usd,
-                    total_volume: market_data.total_volume.usd,
-                    circulating_supply: market_data.circulating_supply,
-                    link: links.homepage[0],
-
-                }
-
+                handleDatabaseFavs({ ...tempFavourites })
+            } else {
                 await setDoc(docRef, {
-                    favourites: { ...tempFavourites },
+                    favourites: [...docData?.favourites, id],
                 }, {
                     merge: true,
                 });
-
-                console.log(tempFavourites);
-                handleFavs(tempFavourites)
+                handleDatabaseFavs({ ...docData?.favourites })
             }
         }
     }
@@ -109,15 +71,15 @@ const Watchlist = ({ userFavs, user, handleFavs }: watchlistProps) => {
             <button onClick={() => { navigate("/") }}>Go Home</button>
         </StyledEmptyWatchList>
     } else {
-        for (let coin in userFavs) {
-            console.log(coin);
 
-            const { market_cap_rank, image, name, symbol, current_price, price_change_percentage_24h, market_cap, total_volume, circulating_supply } = userFavs[coin];
+        for (let coin in userFavs) {
+
+            const { market_cap_rank, image, name, symbol, current_price, price_change_percentage_24h, market_cap, total_volume, circulating_supply } = userFavs[coin]["coin"];
 
             let id = coin;
 
             let temp_current_price: string[] = Number(current_price).toString().split('.');
-            // console.log(new_current_price);
+
             let new_current_price = numberWithCommas(temp_current_price[0]) + "." + (temp_current_price[1] || "00");
 
             // const new_current_price = current_price;
@@ -143,7 +105,7 @@ const Watchlist = ({ userFavs, user, handleFavs }: watchlistProps) => {
                     onClick={() => { routeHandler(id.toString()) }}
                 >
                     <div className="coin-image">
-                        <img src={image.thumb} alt={symbol} />
+                        <img src={image} alt={symbol} />
                     </div>
                     <div className="coin-name">{name}</div>
                     <div className="coin-symbol">{symbol}</div>

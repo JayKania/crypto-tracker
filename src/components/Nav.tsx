@@ -33,7 +33,6 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler,
     const [input, setInput] = useState("");
 
     const inputHandler = (event: any) => {
-        console.group("search logs");
         let searchInput: string = event.target.value;
         searchInput = searchInput.toLowerCase();
         setInput(searchInput);
@@ -48,7 +47,6 @@ const Nav = ({ setSearcedCoins, coinsList, page, pageHandler, loginModalHandler,
         if (page !== 1) {
             pageHandler(1);
         }
-        console.groupEnd();
 
     }
 

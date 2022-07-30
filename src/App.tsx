@@ -21,15 +21,29 @@ import { auth, db } from "./firebaseConfig";
 const App = () => {
 
   const currency = "usd";
-  const [coinsList, setCoinsList] = useState([]);
+  const [coinsList, setCoinsList] = useState<coin[]>([]);
   const [searchedCoins, setSearcedCoins] = useState([]);
   const [page, setPage] = useState<number>(1);
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [favsFromDatabase, setFavsFromDatabase] = useState<string[] | null>([]);
   const [userFavs, setUserFavs] = useState<{} | null>(null);
   const [loading, setLoading] = useState(true);
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
+
+  interface coin {
+    id: number,
+    market_cap_rank: number,
+    image: string,
+    name: string,
+    symbol: string,
+    current_price: number,
+    price_change_percentage_24h: number,
+    market_cap: number,
+    total_volume: number,
+    circulating_supply: number,
+  }
 
   const pageHandler = useCallback((pageNo: number) => {
     setPage(pageNo);
@@ -46,8 +60,11 @@ const App = () => {
   }
 
   const handleFavs = (favs: {} | null) => {
-    // console.log(userFavs);
     setUserFavs(favs);
+  }
+
+  const handleDatabaseFavs = (favs: string[] | null) => {
+    setFavsFromDatabase(favs);
   }
 
   const handleLogout = () => {
@@ -61,7 +78,6 @@ const App = () => {
 
   useEffect(() => {
     auth.onAuthStateChanged(userData => {
-      // console.log(userData);
       setUser(userData);
       setLoading(false);
       getUserFavs();
@@ -71,7 +87,7 @@ const App = () => {
     const getCoinsData = async () => {
       const response_1 = await axios(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=150&page=1&sparkline=false`);
       const response_2 = await axios(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=150&page=2&sparkline=false`);
-      const response: any = [...response_1.data, ...response_2.data];
+      const response: coin[] = [...response_1.data, ...response_2.data];
       setCoinsList(response);
     }
     getCoinsData();
@@ -82,13 +98,19 @@ const App = () => {
         const docSnap = await getDoc(docRef);
         const docData = docSnap.data();
         if (docData) {
-          handleFavs({ ...docData.favourites });
+          let tempUserFavs: any = {};
+          coinsList.forEach(coin => {
+            if (docData.favourites.includes(coin.id.toString())) {
+              tempUserFavs[coin.id] = { coin };
+            }
+          })
+          handleFavs({ ...tempUserFavs });
         }
       }
     }
 
     getUserFavs();
-  }, [loading]);
+  }, [loading, favsFromDatabase]);
 
   const tablePropsObj = {
     coinsList: coinsList,
@@ -97,7 +119,8 @@ const App = () => {
     user: user,
     userFavs: userFavs,
     handleFavs: handleFavs,
-    loginModalHandler: loginModalHandler
+    loginModalHandler: loginModalHandler,
+    handleDatabaseFavs: handleDatabaseFavs,
   }
 
   const navPropsObj = {
@@ -124,7 +147,8 @@ const App = () => {
     userFavs: userFavs,
     handleFavs: handleFavs,
     user: user,
-    loginModalHandler: loginModalHandler
+    loginModalHandler: loginModalHandler,
+    handleDatabaseFavs
   }
 
   const loginPropsObj = {
@@ -141,6 +165,7 @@ const App = () => {
     userFavs: userFavs,
     user: user,
     handleFavs: handleFavs,
+    handleDatabaseFavs
   }
 
   const mobileMenuPropsObj = {

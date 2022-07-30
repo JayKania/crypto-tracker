@@ -22,12 +22,10 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
         setPassErrMsg("");
         try {
             setLoading(true);
-            const data = await signInWithEmailAndPassword(auth, email, password);
-            console.log(data.user);
+            await signInWithEmailAndPassword(auth, email, password);
             loginModalHandler();
             setLoading(false);
         } catch (err: any) {
-            console.log(err.code);
             const errCode = err.code;
             switch (errCode) {
                 case "auth/user-not-found":
@@ -41,14 +39,13 @@ const Login = ({ loginModalHandler, signupModalHandler }: loginProps) => {
             }
             setLoading(false);
         }
-        // signOut(auth);
     }
 
     const inputHandler = (event: any) => {
         if (event.target.id === "email") {
-            setEmail(event.target.value);
+            setEmail(event.target.value.trim());
         } else {
-            setPassword(event.target.value);
+            setPassword(event.target.value.trim());
         }
     }
 
